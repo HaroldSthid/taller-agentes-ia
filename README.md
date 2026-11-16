@@ -44,6 +44,8 @@ cd GeminiADKPracticeCOL/adk-web
 python -m venv .venv
 ```
 
+Al terminar el `git clone`, git imprime un aviso largo que dice que estás en estado **"detached HEAD"**. **Es normal y puedes ignorarlo**: aparece siempre que se clona una versión fija (una etiqueta) y no un error. No tienes que hacer nada.
+
 4. **Instala y prueba**, siguiendo "Antes de empezar" de la [guía técnica](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/ADAPTA_A_TU_EMPRESA.md). Ahí está explicado qué hacer en Windows si PowerShell bloquea la activación del entorno. Si `pytest` pasa, estás listo.
 
 ¿No pudiste instalarlo? No pasa nada: el notebook de Colab del repositorio corre en el navegador, sin instalar nada.
@@ -78,3 +80,7 @@ La presentación es un solo archivo, `index.html`, sin instalar nada. En una pan
 | `T` | Cambia entre tema claro y oscuro |
 
 El código QR de la última diapositiva apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`.
+
+## Licencia
+
+MIT. Puedes usar, copiar y adaptar este material, incluida la presentación. Los detalles están en [`LICENSE`](LICENSE).
