@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los lunes empiezan de cero</title>
+<meta name="description" content="Taller práctico: agentes de IA para que la información no se pierda entre áreas.">
+<meta property="og:title" content="Los lunes empiezan de cero">
+<meta property="og:description" content="Taller práctico: agentes de IA para que la información no se pierda entre áreas.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+/* Layout: one slide per screen on a landscape display; a plain scrolling page on a phone or in portrait.
+   Palette: inked slate with one cobalt accent. Red is reserved for "information lost".
+   Type: Bricolage Grotesque for headings, Inter for text, IBM Plex Mono for log entries and commands. */
+:root {
+  --bg: #F2F5F5;
+  --surface: #FFFFFF;
+  --ink: #12262B;
+  --muted: #52666B;
+  --line: #D3DDDE;
+  --accent: #1F5FD6;
+  --accent-soft: #E3ECFB;
+  --lost: #C03A1B;
+  --lost-soft: #FBE9E4;
+  --ok: #1D7A4D;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --u: 7px; /* base unit: every size is a multiple of it */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D191D; --surface: #15262B; --ink: #E7F0F1; --muted: #9DB2B6; --line: #294046;
+    --accent: #78A6FF; --accent-soft: #1B2F4D; --lost: #FF8465; --lost-soft: #3A1F19; --ok: #5CC890;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D191D; --surface: #15262B; --ink: #E7F0F1; --muted: #9DB2B6; --line: #294046;
+  --accent: #78A6FF; --accent-soft: #1B2F4D; --lost: #FF8465; --lost-soft: #3A1F19; --ok: #5CC890;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: calc(var(--u) * 2.1);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 0.18em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+code, .mono { font-family: var(--font-mono); }
+
+/* ---------- Slides: stacked (default) ---------- */
+.deck { max-width: 1100px; margin: 0 auto; }
+.slide {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--u) * 2);
+  padding: calc(var(--u) * 5) max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-bottom: 1px solid var(--line);
+}
+.slide > * { min-width: 0; }
+.slide aside.notes { display: none; }
+
+h1, h2, h3, p, ul, ol, table, figure, blockquote { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.08; letter-spacing: -0.015em; text-wrap: balance; }
+h1 { font-size: calc(var(--u) * 6); }
+h2 { font-size: calc(var(--u) * 4.2); }
+h3 { font-size: calc(var(--u) * 2.5); line-height: 1.2; }
+.kicker {
+  font-family: var(--font-mono);
+  font-size: calc(var(--u) * 1.6);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+.lead { font-size: calc(var(--u) * 2.5); line-height: 1.4; max-width: 34em; text-wrap: pretty; }
+.muted { color: var(--muted); }
+.small { font-size: calc(var(--u) * 1.7); }
+strong { font-weight: 600; }
+.lost { color: var(--lost); }
+
+/* ---------- Blocks ---------- */
+.cols { display: grid; gap: calc(var(--u) * 2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16em), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: calc(var(--u) * 1.2); padding: calc(var(--u) * 2); }
+.card h3 { margin-bottom: calc(var(--u) * 0.8); }
+.card p { color: var(--muted); }
+.card .tag { display: inline-block; margin-bottom: calc(var(--u) * 1); }
+.tag {
+  font-family: var(--font-mono); font-size: calc(var(--u) * 1.4); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.tag.lost { color: var(--lost); }
+.tag.ok { color: var(--ok); }
+
+.prompt {
+  font-family: var(--font-mono);
+  font-size: calc(var(--u) * 2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--u) * 1);
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 2);
+  overflow-wrap: anywhere;
+}
+.prompt .tag { display: block; margin-bottom: 0.4em; }
+pre.prompt { margin: 0; white-space: pre-wrap; }
+
+.tbl { width: 100%; border-collapse: collapse; font-size: calc(var(--u) * 1.9); }
+.tbl th, .tbl td { text-align: left; padding: calc(var(--u) * 1) calc(var(--u) * 1.4); border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-family: var(--font-mono); font-size: calc(var(--u) * 1.4); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.tbl td:first-child { font-weight: 600; }
+.tbl-wrap { overflow-x: auto; }
+
+.bullets { list-style: none; padding: 0; display: grid; gap: calc(var(--u) * 1.4); font-size: calc(var(--u) * 2.2); }
+.bullets li { padding-left: calc(var(--u) * 2.6); position: relative; }
+.bullets li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: calc(var(--u) * 1.2); height: 2px; background: var(--accent); }
+
+.steps { list-style: none; padding: 0; counter-reset: s; display: grid; gap: calc(var(--u) * 1.4); }
+.steps li { counter-increment: s; display: grid; grid-template-columns: calc(var(--u) * 4) 1fr; align-items: baseline; gap: calc(var(--u) * 1.2); }
+.steps li::before { content: counter(s); font-family: var(--font-mono); color: var(--accent); font-weight: 500; font-size: calc(var(--u) * 2.4); }
+
+.quote { background: var(--surface); border: 1px solid var(--line); border-radius: calc(var(--u) * 1.2); padding: calc(var(--u) * 2); display: grid; gap: calc(var(--u) * 1.2); align-content: start; }
+.quote.before { background: var(--lost-soft); border-color: transparent; }
+.quote.after { background: var(--accent-soft); border-color: transparent; }
+.quote blockquote { font-size: calc(var(--u) * 1.95); line-height: 1.45; }
+.quote blockquote + blockquote { padding-top: calc(var(--u) * 1); }
+
+/* The signature drawing: three areas in a chain, and the link that drops information. */
+.chain { display: flex; align-items: center; gap: 0; flex-wrap: wrap; row-gap: calc(var(--u) * 1.4); }
+.node {
+  font-family: var(--font-display); font-weight: 700; font-size: calc(var(--u) * 2.6);
+  background: var(--surface); border: 2px solid var(--ink); border-radius: calc(var(--u) * 1.1);
+  padding: calc(var(--u) * 1.3) calc(var(--u) * 2.4);
+}
+.link { position: relative; flex: 1 1 calc(var(--u) * 8); min-width: calc(var(--u) * 6); height: calc(var(--u) * 6); display: flex; align-items: center; justify-content: center; }
+.link::before { content: ""; position: absolute; left: 0; right: calc(var(--u) * 0.8); top: 50%; border-top: 3px solid var(--accent); }
+.link::after { content: ""; position: absolute; right: 0; top: 50%; width: calc(var(--u) * 1.3); height: calc(var(--u) * 1.3); border-top: 3px solid var(--accent); border-right: 3px solid var(--accent); transform: translateY(-50%) rotate(45deg); }
+.link span { position: relative; z-index: 1; background: var(--bg); padding: 0 calc(var(--u) * 0.8); font-family: var(--font-mono); font-size: calc(var(--u) * 1.4); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.link.cut::before { border-top: 3px dashed var(--lost); }
+.link.cut::after { border-color: var(--lost); }
+.link.cut span { color: var(--lost); }
+.chain.on-log { margin-bottom: calc(var(--u) * 0.6); }
+/* On a phone the chain runs top to bottom, so the labels on the links keep their room. */
+@media (max-width: 700px) {
+  .chain { flex-direction: column; align-items: stretch; gap: 0; }
+  .node { text-align: center; }
+  .link { flex: none; width: 100%; height: calc(var(--u) * 7); min-width: 0; }
+  .link::before { left: 50%; right: auto; top: 0; bottom: calc(var(--u) * 0.8); border-top: 0; border-left: 3px solid var(--accent); }
+  .link.cut::before { border-left: 3px dashed var(--lost); border-top: 0; }
+  .link::after { right: auto; left: 50%; top: auto; bottom: 0; transform: translateX(-50%) rotate(135deg); }
+}
+.log-strip {
+  font-family: var(--font-mono); font-size: calc(var(--u) * 1.6); color: var(--muted);
+  border: 2px dashed var(--accent); border-radius: calc(var(--u) * 1); padding: calc(var(--u) * 1.2) calc(var(--u) * 2); text-align: center;
+}
+.log-strip strong { color: var(--accent); font-weight: 500; }
+
+.beats { list-style: none; padding: 0; display: grid; gap: calc(var(--u) * 1.6); counter-reset: b; }
+.beats li { counter-increment: b; display: grid; grid-template-columns: calc(var(--u) * 5) 1fr; gap: calc(var(--u) * 1.2); align-items: baseline; font-size: calc(var(--u) * 2.4); }
+.beats li::before { content: counter(b); font-family: var(--font-display); font-weight: 700; font-size: calc(var(--u) * 4); color: var(--muted); line-height: 1; }
+.beats li.hit::before, .beats li.hit .what { color: var(--lost); }
+.beats .what { font-weight: 600; }
+.beats .time { font-family: var(--font-mono); font-size: 0.75em; color: var(--muted); display: block; font-weight: 400; }
+
+/* Chart */
+.chart { width: 100%; height: auto; max-height: calc(var(--u) * 36); }
+.chart text { fill: var(--muted); font-family: var(--font-mono); font-size: 15px; }
+.chart .bar-yes { fill: var(--accent); }
+.chart .bar-no { fill: var(--lost); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .val { fill: var(--ink); font-weight: 500; font-size: 16px; }
+.legend { display: flex; gap: calc(var(--u) * 2.5); flex-wrap: wrap; font-size: calc(var(--u) * 1.7); color: var(--muted); }
+.legend i { display: inline-block; width: 0.9em; height: 0.9em; border-radius: 3px; margin-right: 0.5em; vertical-align: -0.1em; }
+
+.qr-card { background: #FFFFFF; border-radius: calc(var(--u) * 1.4); padding: calc(var(--u) * 1.4); display: inline-block; line-height: 0; }
+.qr-card img { width: calc(var(--u) * 26); max-width: 100%; height: auto; display: block; }
+.qr-wrap { display: grid; gap: calc(var(--u) * 3); grid-template-columns: minmax(0, 1fr); align-items: center; justify-items: start; }
+html.present .qr-wrap { grid-template-columns: auto minmax(0, 1fr); gap: calc(var(--u) * 4); }
+html.present .qr-card img { width: calc(var(--u) * 21); }
+.big-url { font-family: var(--font-mono); font-size: calc(var(--u) * 2.2); overflow-wrap: anywhere; }
+
+/* HUD (present mode only) */
+.hud, .notes-panel, .hint, .click-zone, .progress { display: none; }
+
+/* ---------- Present mode: one slide per screen, 16:9 ---------- */
+html.present, html.present body { height: 100%; overflow: hidden; }
+html.present { --u: calc(min(100vw, 177.78vh) / 100); }
+html.present body { font-size: calc(var(--u) * 1.9); }
+html.present .stage { position: fixed; inset: 0; display: grid; place-items: center; }
+html.present .deck { position: relative; width: calc(var(--u) * 100); height: calc(var(--u) * 56.25); max-width: none; margin: 0; overflow: hidden; }
+html.present .slide { position: absolute; inset: 0; display: none; padding: calc(var(--u) * 4.4) calc(var(--u) * 6); border-bottom: 0; gap: calc(var(--u) * 2); }
+html.present .slide.is-active { display: flex; }
+html.present h1 { font-size: calc(var(--u) * 6.4); }
+html.present h2 { font-size: calc(var(--u) * 3.9); }
+html.present h3 { font-size: calc(var(--u) * 2.3); }
+html.present .lead { font-size: calc(var(--u) * 2.3); }
+html.present .bullets { font-size: calc(var(--u) * 2.1); }
+html.present .beats li { font-size: calc(var(--u) * 2.2); }
+html.present .prompt { font-size: calc(var(--u) * 1.85); }
+html.present .tbl { font-size: calc(var(--u) * 1.75); }
+html.present .quote blockquote { font-size: calc(var(--u) * 1.7); }
+html.present .hud { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; align-items: center; justify-content: space-between; padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); font-family: var(--font-mono); font-size: 13px; color: var(--muted); pointer-events: none; }
+html.present .hud > * { pointer-events: auto; }
+html.present .hud button { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+html.present .hud button:hover { color: var(--ink); border-color: var(--muted); }
+html.present .progress { display: block; position: fixed; left: 0; top: 0; height: 4px; background: var(--accent); width: 0; z-index: 6; transition: width 0.25s ease; }
+html.present .hint { display: block; }
+html.present .notes-panel { position: fixed; left: 0; right: 0; bottom: 0; z-index: 7; background: var(--surface); border-top: 2px solid var(--accent); padding: 16px max(24px, env(safe-area-inset-left, 0px)) 44px; max-height: 42vh; overflow: auto; font-size: 17px; line-height: 1.5; }
+html.present .notes-panel[hidden] { display: none; }
+html.present .notes-panel .tag { display: block; margin-bottom: 6px; }
+html.present .click-zone { display: block; position: fixed; top: 0; bottom: 0; width: 18%; z-index: 3; background: none; border: 0; cursor: pointer; opacity: 0; }
+html.present .click-zone.prev { left: 0; }
+html.present .click-zone.next { right: 0; }
+@media (prefers-reduced-motion: reduce) { html.present .progress { transition: none; } }
+
+@media print {
+  html, body { height: auto !important; overflow: visible !important; }
+  .stage { position: static !important; display: block !important; }
+  .deck { width: auto !important; height: auto !important; overflow: visible !important; }
+  .slide { display: flex !important; position: relative !important; inset: auto !important; min-height: 100vh; break-after: page; page-break-after: always; }
+  .hud, .notes-panel, .progress, .click-zone, .hint { display: none !important; }
+}
+@page { size: landscape; margin: 0; }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<main class="stage">
+<div class="deck" id="deck">
+
+<!-- 1 -->
+<section class="slide" aria-label="Portada">
+  <span class="kicker">Taller práctico · 90 minutos</span>
+  <h1>Los lunes empiezan de cero</h1>
+  <p class="lead">Agentes de IA para que la información no se pierda entre áreas.</p>
+  <div class="chain" role="img" aria-label="Tres áreas encadenadas: Ventas, Logística y Servicio">
+    <div class="node">Ventas</div><div class="link cut"><span>se pierde</span></div>
+    <div class="node">Logística</div><div class="link"><span>pasa</span></div>
+    <div class="node">Servicio</div>
+  </div>
+  <aside class="notes">Abre con calma. Frase de entrada: «Hoy van a ver cómo una operación deja de depender de que alguien se acuerde». Avisa que todo el material usa datos ficticios y que el repositorio es público: lo pueden llevar a casa.</aside>
+</section>
+
+<!-- 2 -->
+<section class="slide" aria-label="Una historia de traspaso">
+  <span class="kicker">El dolor</span>
+  <h2>Un cambio de dirección que nadie vio</h2>
+  <ol class="beats">
+    <li><span><span class="what">Ventas anota el cambio.</span> <span class="time">Pedido 2087, por teléfono, 16:30</span></span></li>
+    <li class="hit"><span><span class="what">Logística no se entera.</span> <span class="time">El despacho salió a las 15:00</span></span></li>
+    <li><span><span class="what">El pedido sale a la dirección vieja.</span></span></li>
+    <li><span><span class="what">Servicio se entera por la queja.</span></span></li>
+  </ol>
+  <aside class="notes">Cuenta la historia en 40 segundos. No se rompió ningún área: se rompió el paso de una a otra. Después de esta diapositiva viene la pregunta a la sala.</aside>
+</section>
+
+<!-- 3 -->
+<section class="slide" aria-label="Pregunta a la sala">
+  <span class="kicker">Para ti</span>
+  <h2>¿En qué traspaso de tu empresa se pierde más información?</h2>
+  <p class="lead">Piénsalo ahora y anótalo. Lo vas a usar en el reto.</p>
+  <aside class="notes">Deja 3 o 4 respuestas en voz alta y anótalas. Las vas a reutilizar en el bloque del reto: sirven de ejemplos propios del público.</aside>
+</section>
+
+<!-- 4 -->
+<section class="slide" aria-label="El dolor en una frase">
+  <span class="kicker">El dolor, en una frase</span>
+  <h2>Cada lunes la operación empieza de cero, porque nadie recuerda qué pasó el viernes.</h2>
+  <aside class="notes">Pausa aquí. Es la frase que ordena el resto del taller: todo lo que sigue es una respuesta a esto.</aside>
+</section>
+
+<!-- 5 -->
+<section class="slide" aria-label="La idea">
+  <span class="kicker">La idea</span>
+  <h2>Los agentes no reemplazan a las áreas</h2>
+  <p class="lead">Hacen lo que hoy hacemos mal con prisa: pasar el contexto completo de un área a la siguiente y dejar memoria de lo que ocurrió.</p>
+  <div class="cols">
+    <div class="card"><span class="tag">1</span><h3>Traspaso de contexto</h3><p>Cada área recibe lo que dejó la anterior, sin que nadie se lo repita.</p></div>
+    <div class="card"><span class="tag">2</span><h3>Memoria compartida</h3><p>Lo que pasó ayer queda escrito donde hoy se usa.</p></div>
+  </div>
+  <aside class="notes">Mensaje: el valor no está en que la IA sea más lista. Está en el traspaso y en la memoria.</aside>
+</section>
+
+<!-- 6 -->
+<section class="slide" aria-label="La analogía">
+  <span class="kicker">La analogía</span>
+  <h2>Una familia es una operación pequeña</h2>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>En la familia</th><th>En la empresa</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td>Coordinador</td><td>Jefe de operaciones</td><td>Recibe el pedido, decide a quién llamar y entrega una sola respuesta</td></tr>
+      <tr><td>Rutina → Comidas → Actividades</td><td>Ventas → Logística → Servicio</td><td>Cada área usa lo que dejó la anterior</td></tr>
+      <tr><td>Diario guardado</td><td>Bitácora de turno</td><td>Lo que pasó ayer no se repite hoy</td></tr>
+      <tr><td>Coach semanal</td><td>Revisión semanal de operaciones</td><td>Lee la bitácora y encuentra patrones</td></tr>
+    </tbody>
+  </table></div>
+  <aside class="notes">El caso es la rutina diaria de una familia: es cercano, no expone datos de ninguna empresa y tiene el mismo problema de fondo. No expliques código.</aside>
+</section>
+
+<!-- 7 -->
+<section class="slide" aria-label="Los cuatro componentes">
+  <span class="kicker">Por dentro</span>
+  <h2>Los 4 componentes de cualquier agente</h2>
+  <div class="cols">
+    <div class="card"><span class="tag">Modelo</span><h3>El cerebro del empleado</h3><p>El mismo para todas las áreas.</p></div>
+    <div class="card"><span class="tag">Instrucción</span><h3>Su descripción de cargo</h3><p>El rol, las reglas y el formato de la respuesta.</p></div>
+    <div class="card"><span class="tag">Herramientas</span><h3>Los sistemas a los que accede</h3><p>Una hoja, el ERP, el CRM. Aquí, guardar y leer la bitácora.</p></div>
+    <div class="card"><span class="tag">Memoria</span><h3>La bitácora compartida</h3><p>Lo que se guardó y se puede volver a leer.</p></div>
+  </div>
+  <aside class="notes">Si solo se llevan una cosa: un agente es un modelo, unas reglas, unas herramientas y una memoria.</aside>
+</section>
+
+<!-- 8 -->
+<section class="slide" aria-label="Demo 1">
+  <span class="kicker">Demo 1 · El traspaso funciona</span>
+  <h2>El contexto viaja entre áreas</h2>
+  <div class="prompt"><span class="tag">Escribe en el chat</span>Organiza el día: despertó a las 6:40, ayer la siesta fue corta, hace sol.</div>
+  <ul class="bullets">
+    <li>El coordinador llama a rutina, luego a comidas y luego a actividades.</li>
+    <li>El plan ya considera la siesta corta de ayer: nadie se la repitió a cada área.</li>
+  </ul>
+  <aside class="notes">En la pestaña Events se ve quién llama a quién. Las respuestas son largas: no las leas enteras, señala una sola frase que demuestre el contexto heredado.</aside>
+</section>
+
+<!-- 9 -->
+<section class="slide" aria-label="Demo 2">
+  <span class="kicker">Demo 2 · La memoria cambia el resultado</span>
+  <h2>El lunes que ya no empieza de cero</h2>
+  <ol class="steps">
+    <li><div class="prompt"><span class="tag">Sesión 1</span>Guarda el registro de hoy: despertó a las 6:40, siesta corta de 40 minutos, buen humor.</div></li>
+    <li><div class="prompt"><span class="tag">Sesión nueva</span>Planifica el día.</div></li>
+  </ol>
+  <p class="lead">La rutina menciona lo que pasó ayer sin que nadie se lo repita.</p>
+  <aside class="notes">Es el momento central del taller. Antes de este paso la base debe estar vacía (comando de reinicio en la lista de preparación). Abre el detalle del especialista de rutina en Events para mostrar que fue él quien leyó la bitácora.</aside>
+</section>
+
+<!-- 10 -->
+<section class="slide" aria-label="Demo 3">
+  <span class="kicker">Demo 3 · La memoria encuentra patrones</span>
+  <h2>El coach ve lo que a nosotros se nos pasa</h2>
+  <svg class="chart" viewBox="0 0 640 250" role="img" aria-label="Gráfico de barras de la duración de la siesta en cinco días: 2 horas, 45 minutos, 1 hora 50, 40 minutos y 1 hora 45. Las siestas largas fueron los días con paseo, cuento y cuarto oscuro.">
+    <g class="grid"><line x1="46" x2="630" y1="200" y2="200"/><line x1="46" x2="630" y1="155" y2="155"/><line x1="46" x2="630" y1="110" y2="110"/><line x1="46" x2="630" y1="65" y2="65"/><line x1="46" x2="630" y1="20" y2="20"/></g>
+    <text x="38" y="205" text-anchor="end">0</text><text x="38" y="160" text-anchor="end">30</text><text x="38" y="115" text-anchor="end">60</text><text x="38" y="70" text-anchor="end">90</text><text x="38" y="25" text-anchor="end">120</text>
+    <rect class="bar-yes" x="70"  y="20"  width="78" height="180" rx="3"/><text class="val" x="109" y="14"  text-anchor="middle">2 h</text>
+    <rect class="bar-no"  x="190" y="132" width="78" height="68"  rx="3"/><text class="val" x="229" y="126" text-anchor="middle">45 min</text>
+    <rect class="bar-yes" x="310" y="35"  width="78" height="165" rx="3"/><text class="val" x="349" y="29"  text-anchor="middle">1 h 50</text>
+    <rect class="bar-no"  x="430" y="140" width="78" height="60"  rx="3"/><text class="val" x="469" y="134" text-anchor="middle">40 min</text>
+    <rect class="bar-yes" x="550" y="42"  width="78" height="158" rx="3"/><text class="val" x="589" y="36"  text-anchor="middle">1 h 45</text>
+    <text x="109" y="222" text-anchor="middle">Día 1</text><text x="229" y="222" text-anchor="middle">Día 2</text><text x="349" y="222" text-anchor="middle">Día 3</text><text x="469" y="222" text-anchor="middle">Día 4</text><text x="589" y="222" text-anchor="middle">Día 5</text>
+  </svg>
+  <div class="legend"><span><i style="background:var(--accent)"></i>Paseo, cuento y cuarto oscuro</span><span><i style="background:var(--lost)"></i>Sin ese ritual</span><span>Minutos de siesta por día · datos ficticios del demo</span></div>
+  <div class="prompt"><span class="tag">Elige family_coach y escribe</span>Haz la revisión semanal. Meta: siestas más largas.</div>
+  <aside class="notes">La bitácora es lo que permite ver el patrón. Antes de este momento hay que sembrar los 5 días ficticios. Di «patrón», no «progreso»: los datos alternan, no mejoran con el tiempo.</aside>
+</section>
+
+<!-- 11 -->
+<section class="slide" aria-label="La IA también rellena">
+  <span class="kicker">Ojo</span>
+  <h2>La IA también rellena con frases agradables</h2>
+  <div class="cols">
+    <div class="quote before"><span class="tag lost">Antes</span>
+      <blockquote>«¡Van por muy buen camino!… El progreso es notable.»</blockquote>
+      <blockquote>Y un desafío que ningún registro decía: que el ritual «puede ser agotador para quien esté a cargo».</blockquote>
+    </div>
+    <div class="quote after"><span class="tag">Después de una regla</span>
+      <blockquote>«Los registros muestran un patrón alternado más que un progreso continuo.»</blockquote>
+      <blockquote>«Como hipótesis, la ausencia de actividad al aire libre en la mañana… podría incidir.»</blockquote>
+    </div>
+  </div>
+  <p class="lead"><strong>Contrasta siempre el análisis con la bitácora.</strong> Y define qué no debe inventar el agente.</p>
+  <aside class="notes">Son respuestas reales del demo, antes y después de ajustar la instrucción del coach. La regla: citar fechas y valores, llamar «patrón» a lo que alterna, marcar las causas como hipótesis. Es la razón de que la hoja del reto tenga una casilla «qué no debe inventar».</aside>
+</section>
+
+<!-- 12 -->
+<section class="slide" aria-label="Instálalo">
+  <span class="kicker">Manos a la obra · 30 min</span>
+  <h2>Tu turno: córrelo en tu máquina</h2>
+  <pre class="prompt"><span class="tag">En una carpeta de ruta corta, por ejemplo C:\taller</span>git clone --branch taller-v1 --depth 1 https://github.com/HaroldSthid/GeminiADKPracticeCOL.git
+cd GeminiADKPracticeCOL/adk-web
+python -m venv .venv</pre>
+  <ul class="bullets">
+    <li>Tu clave de Google AI Studio va en el archivo <code>.env</code>. Nunca en un chat.</li>
+    <li>Windows: si PowerShell bloquea <code>Activate.ps1</code>, usa <code>.venv\Scripts\python.exe</code> y no instales nada hasta comprobar el entorno.</li>
+  </ul>
+  <aside class="notes">Los pasos completos están en «Antes de empezar» de la guía técnica. Quien no logre instalar usa el notebook de Colab del repositorio, que corre en el navegador. Dos trampas conocidas en Windows: ruta demasiado larga (WinError 206) y Activate.ps1 bloqueado.</aside>
+</section>
+
+<!-- 13 -->
+<section class="slide" aria-label="Puntos de control">
+  <span class="kicker">Manos a la obra</span>
+  <h2>Tres puntos de control</h2>
+  <ol class="steps">
+    <li><span><strong>Las pruebas pasan.</strong> <span class="mono">python -m pytest</span> termina en <em>passed</em>. El entorno está bien.</span></li>
+    <li><span><strong>El servidor abre.</strong> <span class="mono">adk web</span> en <span class="mono">localhost:8000</span> lista los agentes.</span></li>
+    <li><span><strong>El primer mensaje responde.</strong> La clave funciona.</span></li>
+  </ol>
+  <p class="muted">¿No pudiste instalarlo? El notebook de Colab corre en el navegador, sin instalar nada.</p>
+  <aside class="notes">Camina entre las mesas. Si alguien se queda en el punto 1, no sigas: es más barato arreglar el entorno ahora. Los avisos DeprecationWarning son normales.</aside>
+</section>
+
+<!-- 14 -->
+<section class="slide" aria-label="El reto">
+  <span class="kicker">El reto · 20 min</span>
+  <h2>Diseña tu traspaso en papel</h2>
+  <ol class="steps">
+    <li><span><strong>3 min.</strong> Elige un traspaso de la lista que anotaste.</span></li>
+    <li><span><strong>10 min.</strong> Llena la hoja de trabajo.</span></li>
+    <li><span><strong>7 min.</strong> Intercambia la hoja con otro equipo, que busca huecos.</span></li>
+  </ol>
+  <p class="lead">Un solo traspaso. Si no te cabe en la hoja, es demasiado grande: acótalo.</p>
+  <aside class="notes">Equipos de 2 o 3 personas. Presentación de 30 segundos: «El demo tenía un jefe que reparte, tres áreas que se pasan el contexto y una bitácora que recuerda. Ahora diseñan lo mismo para su empresa».</aside>
+</section>
+
+<!-- 15 -->
+<section class="slide" aria-label="La hoja de trabajo">
+  <span class="kicker">La hoja de trabajo</span>
+  <h2>Cinco casillas</h2>
+  <ol class="steps">
+    <li><span><strong>El dolor, en una frase.</strong> «Hoy se pierde ___ cuando pasa de ___ a ___».</span></li>
+    <li><span><strong>El equipo de agentes.</strong> Un coordinador y tres áreas: qué recibe y qué entrega cada una.</span></li>
+    <li><span><strong>Los 4 componentes</strong> de cada área: instrucción, herramientas, modelo, memoria.</span></li>
+    <li><span><strong>La bitácora.</strong> Máximo 4 campos.</span></li>
+    <li><span><strong>El coach y la regla anti-invención.</strong> Qué patrón busca, y qué no debe inventar el agente.</span></li>
+  </ol>
+  <aside class="notes">La hoja para imprimir está en el repositorio del código (workshop/RETO_OPCION_A.md). Una por equipo.</aside>
+</section>
+
+<!-- 16 -->
+<section class="slide" aria-label="Ejemplo resuelto">
+  <span class="kicker">Ejemplo resuelto</span>
+  <h2>Un cambio de dirección entre tres áreas</h2>
+  <div class="chain" role="img" aria-label="Ventas, Logística y Servicio al Cliente, y debajo la bitácora compartida">
+    <div class="node">Ventas</div><div class="link"><span>contexto</span></div>
+    <div class="node">Logística</div><div class="link"><span>contexto</span></div>
+    <div class="node">Servicio</div>
+  </div>
+  <div class="log-strip"><strong>Bitácora:</strong> pedido y cliente · cambio solicitado · quién lo recibió y cuándo · estado</div>
+  <div class="cols">
+    <div class="card"><span class="tag">Coach semanal</span><p>Busca los cambios de dirección que llegaron tarde a Logística.</p></div>
+    <div class="card"><span class="tag lost">No debe inventar</span><p>Fechas de entrega, ni confirmar un cambio que la bitácora no registra.</p></div>
+  </div>
+  <aside class="notes">El agente no hace el trabajo de las áreas. Lo que cambia es que el cambio queda escrito donde la siguiente área lo ve, y el lunes alguien puede preguntar «¿qué pasó con los cambios de la semana?». Si conoces un traspaso real del público, cámbialo: pega mucho más.</aside>
+</section>
+
+<!-- 17 -->
+<section class="slide" aria-label="Reglas del reto">
+  <span class="kicker">Reglas del reto</span>
+  <h2>Pequeño, concreto y con una regla</h2>
+  <ul class="bullets">
+    <li><strong>Máximo 3 áreas</strong> encadenadas, como en el demo.</li>
+    <li><strong>Máximo 4 campos</strong> de bitácora.</li>
+    <li><strong>Una regla de qué no inventar</strong>, concreta y de tu empresa.</li>
+    <li><strong>Marca qué decisión sigue siendo de una persona.</strong> El agente propone y registra.</li>
+  </ul>
+  <aside class="notes">Errores frecuentes: elegir un proceso entero, poner 6 o 7 áreas, una bitácora con 15 campos, dejar vacía la regla de qué no inventar.</aside>
+</section>
+
+<!-- 18 -->
+<section class="slide" aria-label="Revisión cruzada">
+  <span class="kicker">Revisión cruzada · 7 min</span>
+  <h2>Cinco preguntas para la hoja del otro equipo</h2>
+  <ol class="steps">
+    <li><span>Si el Área 2 recibe solo lo que dejó el Área 1, ¿le alcanza para trabajar sin llamar a nadie?</span></li>
+    <li><span>¿Qué dato de la bitácora sería el primero en perderse hoy?</span></li>
+    <li><span>¿Algún campo es algo que nadie va a escribir en la práctica?</span></li>
+    <li><span>¿El coach encontraría un patrón con 4 o 5 días de datos?</span></li>
+    <li><span>¿La regla anti-invención cubre el riesgo más caro?</span></li>
+  </ol>
+  <aside class="notes">Camina entre los equipos mirando tres cosas: que el traspaso sea de información (no de una tarea), que la bitácora guarde algo que hoy se pierde, y que haya una regla de qué no inventar.</aside>
+</section>
+
+<!-- 19 -->
+<section class="slide" aria-label="Lo que te llevas">
+  <span class="kicker">Cierre</span>
+  <h2>Tres ideas para llevarte</h2>
+  <ol class="steps">
+    <li><span>Un agente es un <strong>modelo, unas reglas, unas herramientas y una memoria</strong>.</span></li>
+    <li><span>El valor está en el <strong>traspaso de contexto</strong>, no en que la IA sea más lista.</span></li>
+    <li><span>Sin una <strong>bitácora compartida</strong>, cada día empieza de cero.</span></li>
+  </ol>
+  <p class="lead">Cada equipo, en una frase: «El traspaso que atacaría es ___ y la bitácora guardaría ___».</p>
+  <aside class="notes">Pide una frase por equipo. Cierra sin resumir de nuevo: las tres ideas son las mismas del inicio.</aside>
+</section>
+
+<!-- 20 -->
+<section class="slide" aria-label="Llévalo a tu empresa">
+  <span class="kicker">Después del taller</span>
+  <h2>Llévalo a tu empresa</h2>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Si tú…</th><th>Haz esto</th></tr></thead>
+    <tbody>
+      <tr><td>Solo quieres entender</td><td>Vuelve a esta presentación y al video de la demo.</td></tr>
+      <tr><td>No programas, pero quieres construirlo</td><td>Llena la hoja de trabajo y entrégasela, con el prompt, a una IA de código que escribe el prototipo.</td></tr>
+      <tr><td>Sabes usar un repositorio</td><td>Sigue la guía de 30 minutos: copias una plantilla, editas un solo archivo y lo corres.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted"><a href="https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/PROMPT_PARA_IA_DE_CODIGO.md">Prompt para una IA de código</a> · <a href="https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/ADAPTA_A_TU_EMPRESA.md">Guía técnica de 30 minutos</a> · <a href="https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/RETO_OPCION_A.md">Hoja de trabajo</a></p>
+  <aside class="notes">Quien no programa: pídele a la IA que haga una sola pregunta a la vez, y revisa el resultado con la lista del documento del prompt. La IA puede escribir un archivo que funciona pero que no es verdad para tu empresa.</aside>
+</section>
+
+<!-- 21 -->
+<section class="slide" aria-label="Lo que es y lo que no es">
+  <span class="kicker">Con honestidad</span>
+  <h2>Lo que esto es, y lo que no es</h2>
+  <div class="cols">
+    <div class="card"><span class="tag ok">Es</span><p>Un prototipo para probar si un traspaso se ordena con agentes y una bitácora compartida.</p></div>
+    <div class="card"><span class="tag lost">No es</span><p>Una integración con tus sistemas. Conectarlo al ERP o al CRM es un proyecto con el equipo de TI.</p></div>
+    <div class="card"><span class="tag lost">No decide por ti</span><p>Propone y registra. Las decisiones críticas siguen siendo de una persona.</p></div>
+    <div class="card"><span class="tag lost">No reemplaza revisar</span><p>El modelo puede rellenar. Contrasta su análisis con la bitácora.</p></div>
+  </div>
+  <p class="small muted">Mientras pruebas, usa datos ficticios: no pegues nombres ni datos reales de clientes.</p>
+  <aside class="notes">Dilo en voz alta: es un prototipo. El valor está en aprender dónde se rompe el traspaso, no en tener ya un sistema.</aside>
+</section>
+
+<!-- 22 -->
+<section class="slide" aria-label="Material">
+  <span class="kicker">Material</span>
+  <h2>Todo está en el repositorio</h2>
+  <div class="qr-wrap">
+    <div class="qr-card"><img src="assets/qr-presentacion.svg" alt="Código QR que abre esta presentación" width="260" height="260"></div>
+    <div>
+      <p class="lead">Escanea el código para tener esta presentación y los enlaces en tu teléfono.</p>
+      <p class="big-url">haroldsthid.github.io/taller-agentes-ia</p>
+      <p class="small muted"><a href="https://github.com/HaroldSthid/taller-agentes-ia">Repositorio del taller</a> · <a href="https://github.com/HaroldSthid/GeminiADKPracticeCOL/tree/taller-v1">Código y guías</a></p>
+    </div>
+  </div>
+  <aside class="notes">Deja esta diapositiva abierta mientras la gente se acomoda o se despide. El QR lleva a esta misma presentación; desde la última sección salen todos los enlaces.</aside>
+</section>
+
+</div>
+</main>
+
+<button class="click-zone prev" aria-label="Diapositiva anterior" tabindex="-1"></button>
+<button class="click-zone next" aria-label="Diapositiva siguiente" tabindex="-1"></button>
+<div class="notes-panel" hidden></div>
+<div class="hud" role="toolbar" aria-label="Controles de la presentación">
+  <span class="hint">← → avanzar · N notas · F pantalla completa · T tema</span>
+  <span class="counter" aria-live="polite"></span>
+  <button type="button" class="theme-btn" aria-label="Cambiar tema claro u oscuro">Tema</button>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var counter = document.querySelector('.counter');
+  var progress = document.querySelector('.progress');
+  var panel = document.querySelector('.notes-panel');
+  var current = 0;
+  var query = window.matchMedia('(min-aspect-ratio: 5/4) and (min-width: 701px)');
+
+  function store(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+  function load(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+
+  // Theme: follows the system until the viewer picks one.
+  var saved = load('taller-theme');
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  function toggleTheme() {
+    var dark = root.getAttribute('data-theme') === 'dark' ||
+      (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    store('taller-theme', next);
+  }
+
+  function fromHash() {
+    var n = parseInt(location.hash.slice(1), 10);
+    return n >= 1 && n <= slides.length ? n - 1 : 0;
+  }
+
+  function renderNotes() {
+    var note = slides[current].querySelector('aside.notes');
+    panel.innerHTML = '';
+    var tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = 'Notas del orador';
+    panel.appendChild(tag);
+    var text = document.createElement('div');
+    text.textContent = note ? note.textContent : '';
+    panel.appendChild(text);
+  }
+
+  function show(n, updateHash) {
+    current = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('is-active', k === current); });
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    if (updateHash !== false) {
+      try { history.replaceState(null, '', '#' + (current + 1)); } catch (e) {}
+    }
+    if (!panel.hidden) renderNotes();
+  }
+
+  function setMode() {
+    var present = query.matches;
+    root.classList.toggle('present', present);
+    if (present) {
+      show(fromHash(), false);
+    } else {
+      slides.forEach(function (s) { s.classList.remove('is-active'); });
+      panel.hidden = true;
+      var target = slides[fromHash()];
+      if (location.hash && target) target.scrollIntoView();
+    }
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', function (e) {
+    if (!root.classList.contains('present') || e.altKey || e.ctrlKey || e.metaKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); next(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); prev(); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(slides.length - 1); }
+    else if (k === 'n' || k === 'N') { panel.hidden = !panel.hidden; if (!panel.hidden) renderNotes(); }
+    else if (k === 't' || k === 'T') { toggleTheme(); }
+    else if (k === 'f' || k === 'F') {
+      try {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else root.requestFullscreen();
+      } catch (err) {}
+    }
+    else if (k === 'Escape') { panel.hidden = true; }
+  });
+
+  document.querySelector('.click-zone.next').addEventListener('click', next);
+  document.querySelector('.click-zone.prev').addEventListener('click', prev);
+  document.querySelector('.theme-btn').addEventListener('click', toggleTheme);
+
+  var startX = null;
+  document.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (startX === null || !root.classList.contains('present')) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    startX = null;
+    if (Math.abs(dx) > 50) { if (dx < 0) next(); else prev(); }
+  }, { passive: true });
+
+  window.addEventListener('hashchange', function () { if (root.classList.contains('present')) show(fromHash(), false); });
+  if (query.addEventListener) query.addEventListener('change', setMode); else query.addListener(setMode);
+  setMode();
+})();
+</script>
+</body>
+</html>

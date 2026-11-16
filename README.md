@@ -14,7 +14,7 @@ Primero lo ves en un caso cercano (la rutina diaria de una familia). Después lo
 
 | Si tú... | Haz esto |
 | --- | --- |
-| **Solo quieres entender la idea** | Mira la presentación y la demo. No necesitas instalar nada |
+| **Solo quieres entender la idea** | Mira la [presentación](https://haroldsthid.github.io/taller-agentes-ia/) y la demo. No necesitas instalar nada |
 | **No programas, pero quieres llevarlo a tu empresa** | Llena la hoja de trabajo y entrégasela, con el prompt, a una IA de código que escribe el prototipo por ti |
 | **Sabes usar un repositorio de GitHub** | Sigue la guía de 30 minutos: copias una plantilla, editas un solo archivo y lo corres |
 
@@ -63,3 +63,18 @@ python -m venv .venv
 - **No es** una integración con tus sistemas (ERP, CRM). Conectarlo es un proyecto con el equipo de TI.
 - **No decide por ti.** Los agentes proponen y registran. Las decisiones críticas siguen siendo de una persona.
 - **No reemplaza revisar.** El modelo puede rellenar con frases agradables. Contrasta siempre su análisis con la bitácora.
+
+---
+
+## Para quien presenta
+
+La presentación es un solo archivo, `index.html`, sin instalar nada. En una pantalla horizontal se presenta diapositiva por diapositiva; en un teléfono se lee como una página que baja. Para abrirla en local, basta con abrir el archivo en el navegador.
+
+| Tecla | Qué hace |
+| --- | --- |
+| `←` `→` o espacio | Cambia de diapositiva |
+| `N` | Muestra u oculta las notas del orador |
+| `F` | Pantalla completa |
+| `T` | Cambia entre tema claro y oscuro |
+
+El código QR de la última diapositiva apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`.
