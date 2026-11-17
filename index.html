@@ -27,6 +27,7 @@
   --lost: #C03A1B;
   --lost-soft: #FBE9E4;
   --ok: #1D7A4D;
+  --on-accent: #FFFFFF;
   --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
@@ -35,13 +36,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0D191D; --surface: #15262B; --ink: #E7F0F1; --muted: #9DB2B6; --line: #294046;
-    --accent: #78A6FF; --accent-soft: #1B2F4D; --lost: #FF8465; --lost-soft: #3A1F19; --ok: #5CC890;
+    --accent: #78A6FF; --accent-soft: #1B2F4D; --lost: #FF8465; --lost-soft: #3A1F19; --ok: #5CC890; --on-accent: #0D191D;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0D191D; --surface: #15262B; --ink: #E7F0F1; --muted: #9DB2B6; --line: #294046;
-  --accent: #78A6FF; --accent-soft: #1B2F4D; --lost: #FF8465; --lost-soft: #3A1F19; --ok: #5CC890;
+  --accent: #78A6FF; --accent-soft: #1B2F4D; --lost: #FF8465; --lost-soft: #3A1F19; --ok: #5CC890; --on-accent: #0D191D;
   color-scheme: dark;
 }
 
@@ -235,6 +236,26 @@ html.present .steps { font-size: calc(var(--u) * 2.3); gap: calc(var(--u) * 2.2)
 .legend i.cache { background: var(--accent-soft); border: 1.5px dashed var(--accent); }
 .legend i.new { background: var(--accent); }
 
+/* Narration: a listen button and a transcript on each slide. Hidden while presenting (key A plays it). */
+.aud-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--u) * 0.8) calc(var(--u) * 1.6); }
+.aud {
+  position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: calc(var(--u) * 1);
+  padding: calc(var(--u) * 0.5) calc(var(--u) * 2) calc(var(--u) * 0.5) calc(var(--u) * 0.5);
+  border: 1px solid var(--accent); border-radius: 999px; background: var(--accent-soft); color: var(--ink);
+  font: 500 calc(var(--u) * 1.8) var(--font-body); cursor: pointer;
+}
+.aud:hover { background: var(--surface); }
+.aud .aud-ico { width: calc(var(--u) * 3.6); height: calc(var(--u) * 3.6); border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: calc(var(--u) * 1.4); flex: none; }
+.aud .aud-dur { font: 400 calc(var(--u) * 1.5) var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.aud .aud-bar { position: absolute; left: 0; bottom: 0; height: 3px; width: var(--p, 0%); background: var(--accent); }
+.aud[aria-pressed="true"] { background: var(--surface); }
+.aud-t { border: 0; background: none; padding: calc(var(--u) * 0.4) 0; color: var(--muted); font: 400 calc(var(--u) * 1.6) var(--font-mono); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.aud-t:hover { color: var(--ink); }
+.aud-note { font: 400 calc(var(--u) * 1.4) var(--font-mono); color: var(--muted); letter-spacing: 0.04em; }
+.aud-tr { flex-basis: 100%; border-left: 2px solid var(--line); padding: calc(var(--u) * 0.4) 0 calc(var(--u) * 0.4) calc(var(--u) * 1.6); max-width: 72ch; }
+.aud-tr p { font-size: calc(var(--u) * 1.8); line-height: 1.6; color: var(--muted); }
+html.present .aud-wrap { display: none; }
+
 /* HUD (present mode only) */
 .hud, .notes-panel, .hint, .click-zone, .progress { display: none; }
 
@@ -288,6 +309,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Portada">
   <span class="kicker">Taller práctico · 90 minutos</span>
   <h1>Los lunes empiezan de cero</h1>
+  <div class="aud-wrap" data-aud-slide="s01"><button type="button" class="aud" data-aud="s01" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:19</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s01" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s01" hidden><p>Bienvenido al taller práctico Los lunes empiezan de cero. Vamos a ver cómo los agentes de inteligencia artificial ayudan a que la información no se pierda cuando pasa de un área a otra. Ventas, logística, servicio: el problema casi nunca está dentro de un área, está en el paso de una a la siguiente.</p></div></div>
   <p class="lead">Agentes de IA para que la información no se pierda entre áreas.</p>
   <div class="chain" role="img" aria-label="Tres áreas encadenadas: Ventas, Logística y Servicio">
     <div class="node">Ventas</div><div class="link cut"><span>se pierde</span></div>
@@ -301,6 +323,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Una historia de traspaso">
   <span class="kicker">El dolor</span>
   <h2>Un cambio de dirección que nadie vio</h2>
+  <div class="aud-wrap" data-aud-slide="s02"><button type="button" class="aud" data-aud="s02" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:26</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s02" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s02" hidden><p>Una historia de traspaso. Ventas anota por teléfono, a las cuatro y media, un cambio de dirección en el pedido dos mil ochenta y siete. Pero el despacho ya había salido a las tres, y logística no se entera. El pedido sale a la dirección vieja, y servicio lo descubre cuando llega la queja del cliente. Ninguna área falló: lo que se rompió fue el paso de una a otra.</p></div></div>
   <ol class="beats">
     <li><span><span class="what">Ventas anota el cambio.</span> <span class="time">Pedido 2087, por teléfono, 16:30</span></span></li>
     <li class="hit"><span><span class="what">Logística no se entera.</span> <span class="time">El despacho salió a las 15:00</span></span></li>
@@ -314,6 +337,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Pregunta a la sala">
   <span class="kicker">Para ti</span>
   <h2>¿En qué traspaso de tu empresa se pierde más información?</h2>
+  <div class="aud-wrap" data-aud-slide="s03"><button type="button" class="aud" data-aud="s03" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:10</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s03" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s03" hidden><p>Una pregunta para ti. ¿En qué traspaso de tu empresa se pierde más información? Piénsalo ahora y anótalo: lo vas a usar en el reto.</p></div></div>
   <p class="lead">Piénsalo ahora y anótalo. Lo vas a usar en el reto.</p>
   <aside class="notes">Deja 3 o 4 respuestas en voz alta y anótalas. Las vas a reutilizar en el bloque del reto: sirven de ejemplos propios del público.</aside>
 </section>
@@ -322,6 +346,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="El dolor en una frase">
   <span class="kicker">El dolor, en una frase</span>
   <h2>Cada lunes la operación empieza de cero, porque nadie recuerda qué pasó el viernes.</h2>
+  <div class="aud-wrap" data-aud-slide="s04"><button type="button" class="aud" data-aud="s04" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:11</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s04" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s04" hidden><p>El dolor, en una frase. Cada lunes la operación empieza de cero, porque nadie recuerda qué pasó el viernes. Todo lo que sigue en el taller es una respuesta a esto.</p></div></div>
   <aside class="notes">Pausa aquí. Es la frase que ordena el resto del taller: todo lo que sigue es una respuesta a esto.</aside>
 </section>
 
@@ -329,6 +354,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="La idea">
   <span class="kicker">La idea</span>
   <h2>Los agentes no reemplazan a las áreas</h2>
+  <div class="aud-wrap" data-aud-slide="s05"><button type="button" class="aud" data-aud="s05" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:29</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s05" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s05" hidden><p>Los agentes no reemplazan a las áreas. Hacen lo que hoy hacemos mal cuando vamos con prisa: pasar el contexto completo de un área a la siguiente, y dejar memoria de lo que ocurrió. Son dos cosas. Primero, el traspaso de contexto: cada área recibe lo que dejó la anterior, sin que nadie tenga que repetírselo. Y segundo, la memoria compartida: lo que pasó ayer queda escrito donde hoy se usa.</p></div></div>
   <p class="lead">Hacen lo que hoy hacemos mal con prisa: pasar el contexto completo de un área a la siguiente y dejar memoria de lo que ocurrió.</p>
   <div class="cols">
     <div class="card"><span class="tag">1</span><h3>Traspaso de contexto</h3><p>Cada área recibe lo que dejó la anterior, sin que nadie se lo repita.</p></div>
@@ -341,6 +367,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="La analogía">
   <span class="kicker">La analogía</span>
   <h2>Una familia es una operación pequeña</h2>
+  <div class="aud-wrap" data-aud-slide="s06"><button type="button" class="aud" data-aud="s06" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:37</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s06" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s06" hidden><p>La analogía. Usamos una familia porque es una operación pequeña con el mismo problema de fondo. El coordinador de la familia es el jefe de operaciones de la empresa: recibe el pedido, decide a quién llamar y entrega una sola respuesta. La cadena rutina, comidas y actividades equivale a ventas, logística y servicio: cada área usa lo que dejó la anterior. El diario guardado es la bitácora de turno, y el coach semanal es la revisión semanal de operaciones, que lee la bitácora y encuentra patrones.</p></div></div>
   <div class="tbl-wrap"><table class="tbl">
     <thead><tr><th>En la familia</th><th>En la empresa</th><th>Qué hace</th></tr></thead>
     <tbody>
@@ -357,6 +384,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Los cuatro componentes">
   <span class="kicker">Por dentro</span>
   <h2>Los 4 componentes de cualquier agente</h2>
+  <div class="aud-wrap" data-aud-slide="s07"><button type="button" class="aud" data-aud="s07" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:31</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s07" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s07" hidden><p>Los cuatro componentes de cualquier agente. El modelo, que es el cerebro del empleado y es el mismo para todas las áreas. La instrucción, que es su descripción de cargo: el rol, las reglas y el formato de la respuesta. Las herramientas, que son los sistemas a los que accede: una hoja, el E R P, el C R M; aquí, guardar y leer la bitácora. Y la memoria: la bitácora compartida, lo que se guardó y se puede volver a leer.</p></div></div>
   <div class="cols">
     <div class="card"><span class="tag">Modelo</span><h3>El cerebro del empleado</h3><p>El mismo para todas las áreas.</p></div>
     <div class="card"><span class="tag">Instrucción</span><h3>Su descripción de cargo</h3><p>El rol, las reglas y el formato de la respuesta.</p></div>
@@ -370,6 +398,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Demo 1">
   <span class="kicker">Demo 1 · El traspaso funciona</span>
   <h2>El contexto viaja entre áreas</h2>
+  <div class="aud-wrap" data-aud-slide="s08"><button type="button" class="aud" data-aud="s08" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:25</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s08" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s08" hidden><p>Primera demostración: el traspaso funciona. Le escribimos al coordinador: organiza el día, despertó a las seis cuarenta, ayer la siesta fue corta y hace sol. El coordinador llama a rutina, luego a comidas y luego a actividades. Fíjate en el resultado: el plan ya considera la siesta corta de ayer, y nadie se la repitió a cada área.</p></div></div>
   <div class="prompt"><span class="tag">Escribe en el chat</span>Organiza el día: despertó a las 6:40, ayer la siesta fue corta, hace sol.</div>
   <ul class="bullets">
     <li>El coordinador llama a rutina, luego a comidas y luego a actividades.</li>
@@ -382,6 +411,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Demo 2">
   <span class="kicker">Demo 2 · La memoria cambia el resultado</span>
   <h2>El lunes que ya no empieza de cero</h2>
+  <div class="aud-wrap" data-aud-slide="s09"><button type="button" class="aud" data-aud="s09" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:25</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s09" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s09" hidden><p>Segunda demostración: la memoria cambia el resultado. En una primera sesión guardamos el registro del día: despertó a las seis cuarenta, siesta corta de cuarenta minutos, buen humor. Luego abrimos una sesión nueva y pedimos: planifica el día. La rutina menciona lo que pasó ayer sin que nadie se lo repita. Ese es el lunes que ya no empieza de cero.</p></div></div>
   <ol class="steps">
     <li><div class="prompt"><span class="tag">Sesión 1</span>Guarda el registro de hoy: despertó a las 6:40, siesta corta de 40 minutos, buen humor.</div></li>
     <li><div class="prompt"><span class="tag">Sesión nueva</span>Planifica el día.</div></li>
@@ -394,6 +424,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Demo 3">
   <span class="kicker">Demo 3 · La memoria encuentra patrones</span>
   <h2>El coach ve lo que a nosotros se nos pasa</h2>
+  <div class="aud-wrap" data-aud-slide="s10"><button type="button" class="aud" data-aud="s10" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:26</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s10" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s10" hidden><p>Tercera demostración: la memoria encuentra patrones. Con cinco días de datos ficticios, el coach ve algo que a nosotros se nos pasa: una diferencia en la siesta entre los días con paseo, cuento y cuarto oscuro, y los días sin ese ritual. Para probarlo, elige el agente family coach y escribe: haz la revisión semanal, meta, siestas más largas.</p></div></div>
   <svg class="chart" viewBox="0 0 640 250" role="img" aria-label="Gráfico de barras de la duración de la siesta en cinco días: 2 horas, 45 minutos, 1 hora 50, 40 minutos y 1 hora 45. Las siestas largas fueron los días con paseo, cuento y cuarto oscuro.">
     <g class="grid"><line x1="46" x2="630" y1="200" y2="200"/><line x1="46" x2="630" y1="155" y2="155"/><line x1="46" x2="630" y1="110" y2="110"/><line x1="46" x2="630" y1="65" y2="65"/><line x1="46" x2="630" y1="20" y2="20"/></g>
     <text x="38" y="205" text-anchor="end">0</text><text x="38" y="160" text-anchor="end">30</text><text x="38" y="115" text-anchor="end">60</text><text x="38" y="70" text-anchor="end">90</text><text x="38" y="25" text-anchor="end">120</text>
@@ -413,6 +444,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="La IA también rellena">
   <span class="kicker">Ojo</span>
   <h2>La IA también rellena con frases agradables</h2>
+  <div class="aud-wrap" data-aud-slide="s11"><button type="button" class="aud" data-aud="s11" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:32</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s11" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s11" hidden><p>Ojo: la inteligencia artificial también rellena con frases agradables. Antes de ajustar la instrucción, el coach decía: van por muy buen camino, el progreso es notable, e inventaba un desafío que ningún registro mencionaba. Después de una regla, dijo algo más honesto: los registros muestran un patrón alternado más que un progreso continuo, y planteó las causas como hipótesis. La lección: contrasta siempre el análisis con la bitácora, y define qué no debe inventar el agente.</p></div></div>
   <div class="cols">
     <div class="quote before"><span class="tag lost">Antes</span>
       <blockquote>«¡Van por muy buen camino!… El progreso es notable.»</blockquote>
@@ -431,6 +463,7 @@ html.present .click-zone.next { right: 0; }
 <section class="slide" aria-label="Instálalo">
   <span class="kicker">Manos a la obra · 30 min</span>
   <h2>Tu turno: córrelo en tu máquina</h2>
+  <div class="aud-wrap" data-aud-slide="s12"><button type="button" class="aud" data-aud="s12" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:35</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s12" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s12" hidden><p>Tu turno: córrelo en tu máquina. Trabaja en una carpeta de ruta corta, porque en Windows las rutas largas dan problemas. Clona el repositorio en la versión del taller, entra a la carpeta adk web, y crea el entorno de Python. Tu clave de Google AI Studio va en el archivo punto env, nunca en un chat. Si PowerShell bloquea el script de activación, usa el Python del entorno directamente y no instales nada hasta comprobar que el entorno es el correcto. Los comandos exactos están en la diapositiva.</p></div></div>
   <pre class="prompt"><span class="tag">En una carpeta de ruta corta, por ejemplo C:\taller</span>git clone --branch taller-v1 --depth 1 https://github.com/HaroldSthid/GeminiADKPracticeCOL.git
 cd GeminiADKPracticeCOL/adk-web
 python -m venv .venv</pre>
@@ -445,6 +478,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Puntos de control">
   <span class="kicker">Manos a la obra</span>
   <h2>Tres puntos de control</h2>
+  <div class="aud-wrap" data-aud-slide="s13"><button type="button" class="aud" data-aud="s13" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:25</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s13" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s13" hidden><p>Tres puntos de control. Uno: las pruebas pasan, y eso significa que el entorno está bien. Dos: el servidor abre en el puerto ocho mil y lista los agentes. Tres: el primer mensaje responde, y eso significa que la clave funciona. Si no pudiste instalarlo, el notebook de Colab corre en el navegador, sin instalar nada.</p></div></div>
   <ol class="steps">
     <li><span><strong>Las pruebas pasan.</strong> <span class="mono">python -m pytest</span> termina en <em>passed</em>. El entorno está bien.</span></li>
     <li><span><strong>El servidor abre.</strong> <span class="mono">adk web</span> en <span class="mono">localhost:8000</span> lista los agentes.</span></li>
@@ -458,6 +492,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="El reto">
   <span class="kicker">El reto · 20 min</span>
   <h2>Diseña tu traspaso en papel</h2>
+  <div class="aud-wrap" data-aud-slide="s14"><button type="button" class="aud" data-aud="s14" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:21</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s14" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s14" hidden><p>El reto: diseña tu traspaso en papel, en veinte minutos. Tres minutos para elegir un traspaso de la lista que anotaste. Diez minutos para llenar la hoja de trabajo. Y siete minutos para intercambiar la hoja con otro equipo, que buscará huecos. Un solo traspaso: si no te cabe en la hoja, es demasiado grande, acótalo.</p></div></div>
   <ol class="steps">
     <li><span><strong>3 min.</strong> Elige un traspaso de la lista que anotaste.</span></li>
     <li><span><strong>10 min.</strong> Llena la hoja de trabajo.</span></li>
@@ -471,6 +506,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="La hoja de trabajo">
   <span class="kicker">La hoja de trabajo</span>
   <h2>Cinco casillas</h2>
+  <div class="aud-wrap" data-aud-slide="s15"><button type="button" class="aud" data-aud="s15" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:38</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s15" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s15" hidden><p>La hoja de trabajo tiene cinco casillas. Uno, el dolor en una frase: hoy se pierde algo cuando pasa de un área a otra. Dos, el equipo de agentes: un coordinador y tres áreas, con lo que recibe y entrega cada una. Tres, los cuatro componentes de cada área: instrucción, herramientas, modelo y memoria. Cuatro, la bitácora, con un máximo de cuatro campos. Y cinco, el coach y la regla anti invención: qué patrón busca, y qué no debe inventar el agente.</p></div></div>
   <ol class="steps">
     <li><span><strong>El dolor, en una frase.</strong> «Hoy se pierde ___ cuando pasa de ___ a ___».</span></li>
     <li><span><strong>El equipo de agentes.</strong> Un coordinador y tres áreas: qué recibe y qué entrega cada una.</span></li>
@@ -485,6 +521,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Ejemplo resuelto">
   <span class="kicker">Ejemplo resuelto</span>
   <h2>Un cambio de dirección entre tres áreas</h2>
+  <div class="aud-wrap" data-aud-slide="s16"><button type="button" class="aud" data-aud="s16" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:31</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s16" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s16" hidden><p>Un ejemplo resuelto: un cambio de dirección entre tres áreas. Ventas pasa el contexto a logística, y logística a servicio. La bitácora guarda cuatro cosas: el pedido y el cliente, el cambio solicitado, quién lo recibió y cuándo, y el estado. El coach semanal busca los cambios de dirección que llegaron tarde a logística. Y la regla de qué no debe inventar: fechas de entrega, ni confirmar un cambio que la bitácora no registra.</p></div></div>
   <div class="chain" role="img" aria-label="Ventas, Logística y Servicio al Cliente, y debajo la bitácora compartida">
     <div class="node">Ventas</div><div class="link"><span>contexto</span></div>
     <div class="node">Logística</div><div class="link"><span>contexto</span></div>
@@ -502,6 +539,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Reglas del reto">
   <span class="kicker">Reglas del reto</span>
   <h2>Pequeño, concreto y con una regla</h2>
+  <div class="aud-wrap" data-aud-slide="s17"><button type="button" class="aud" data-aud="s17" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:22</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s17" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s17" hidden><p>Las reglas del reto: pequeño, concreto y con una regla. Máximo tres áreas encadenadas, como en la demostración. Máximo cuatro campos de bitácora. Una regla de qué no inventar, concreta y de tu empresa. Y marca qué decisión sigue siendo de una persona: el agente propone y registra.</p></div></div>
   <ul class="bullets">
     <li><strong>Máximo 3 áreas</strong> encadenadas, como en el demo.</li>
     <li><strong>Máximo 4 campos</strong> de bitácora.</li>
@@ -515,6 +553,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Revisión cruzada">
   <span class="kicker">Revisión cruzada · 7 min</span>
   <h2>Cinco preguntas para la hoja del otro equipo</h2>
+  <div class="aud-wrap" data-aud-slide="s18"><button type="button" class="aud" data-aud="s18" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:32</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s18" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s18" hidden><p>Revisión cruzada. Cuando recibas la hoja de otro equipo, hazle cinco preguntas. Si el área dos recibe solo lo que dejó el área uno, ¿le alcanza para trabajar sin llamar a nadie? ¿Qué dato de la bitácora sería el primero en perderse hoy? ¿Algún campo es algo que nadie va a escribir en la práctica? ¿El coach encontraría un patrón con cuatro o cinco días de datos? Y por último: ¿la regla anti invención cubre el riesgo más caro?</p></div></div>
   <ol class="steps">
     <li><span>Si el Área 2 recibe solo lo que dejó el Área 1, ¿le alcanza para trabajar sin llamar a nadie?</span></li>
     <li><span>¿Qué dato de la bitácora sería el primero en perderse hoy?</span></li>
@@ -529,6 +568,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Lo que te llevas">
   <span class="kicker">Cierre</span>
   <h2>Tres ideas para llevarte</h2>
+  <div class="aud-wrap" data-aud-slide="s19"><button type="button" class="aud" data-aud="s19" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:33</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s19" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s19" hidden><p>Tres ideas para llevarte. Primera: un agente es un modelo, unas reglas, unas herramientas y una memoria. Segunda: el valor está en el traspaso de contexto, no en que la inteligencia artificial sea más lista. Tercera: sin una bitácora compartida, cada día empieza de cero. Y una tarea para tu equipo: completa esta frase. El traspaso que atacaría es este, y la bitácora guardaría esto.</p></div></div>
   <ol class="steps">
     <li><span>Un agente es un <strong>modelo, unas reglas, unas herramientas y una memoria</strong>.</span></li>
     <li><span>El valor está en el <strong>traspaso de contexto</strong>, no en que la IA sea más lista.</span></li>
@@ -542,6 +582,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Llévalo a tu empresa">
   <span class="kicker">Después del taller</span>
   <h2>Llévalo a tu empresa</h2>
+  <div class="aud-wrap" data-aud-slide="s20"><button type="button" class="aud" data-aud="s20" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:27</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s20" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s20" hidden><p>Llévalo a tu empresa. Si solo quieres entender, vuelve a esta presentación y al video de la demostración. Si no programas, pero quieres construirlo, llena la hoja de trabajo y entrégasela, junto con el prompt, a una inteligencia artificial que escribe código y arma el prototipo. Y si sabes usar un repositorio, sigue la guía de treinta minutos: copias una plantilla, editas un solo archivo y lo corres.</p></div></div>
   <div class="tbl-wrap"><table class="tbl">
     <thead><tr><th>Si tú…</th><th>Haz esto</th></tr></thead>
     <tbody>
@@ -558,6 +599,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Lo que es y lo que no es">
   <span class="kicker">Con honestidad</span>
   <h2>Lo que esto es, y lo que no es</h2>
+  <div class="aud-wrap" data-aud-slide="s21"><button type="button" class="aud" data-aud="s21" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:41</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="s21" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="s21" hidden><p>Con honestidad, lo que esto es y lo que no es. Es un prototipo para probar si un traspaso se ordena con agentes y una bitácora compartida. No es una integración con tus sistemas: conectarlo al E R P o al C R M es un proyecto con el equipo de tecnología. No decide por ti: propone y registra, y las decisiones críticas siguen siendo de una persona. Y no reemplaza revisar: el modelo puede rellenar, así que contrasta su análisis con la bitácora. Mientras pruebas, usa datos ficticios: no pegues nombres ni datos reales de clientes.</p></div></div>
   <div class="cols">
     <div class="card"><span class="tag ok">Es</span><p>Un prototipo para probar si un traspaso se ordena con agentes y una bitácora compartida.</p></div>
     <div class="card"><span class="tag lost">No es</span><p>Una integración con tus sistemas. Conectarlo al ERP o al CRM es un proyecto con el equipo de TI.</p></div>
@@ -601,6 +643,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="¿Necesito un agente?">
   <span class="kicker">Bonus · ¿Cuándo?</span>
   <h2>Tres preguntas para elegir el escalón</h2>
+  <div class="aud-wrap" data-aud-slide="b24"><button type="button" class="aud" data-aud="b24" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:47</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="b24" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="b24" hidden><p>¿Necesito un agente? Hazte tres preguntas. Primera, cómo llegan los datos: si llegan ordenados, como en un formulario, basta una automatización; si llegan en texto libre pero se ordenan de una vez, basta la inteligencia artificial en un paso; si llegan en texto libre y repartidos en varios sistemas, hay que cruzarlos, y ahí empieza el agente. Segunda, a qué sistemas consulta: siempre a los mismos, o el modelo elige a cuál ir según el caso. Tercera, quién escoge el camino: nadie, o el modelo, paso a paso. Empieza por el escalón más bajo que resuelva tu caso, y sube solo si una pregunta lo pide.</p></div></div>
   <div class="tbl-wrap"><table class="tbl">
     <thead><tr><th>Pregunta</th><th>Automatización</th><th>IA en un paso</th><th>Agente</th></tr></thead>
     <tbody>
@@ -617,6 +660,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Cómo cobran los modelos">
   <span class="kicker">Bonus · ¿Cuánto?</span>
   <h2>Se paga por lo que el modelo lee y escribe</h2>
+  <div class="aud-wrap" data-aud-slide="b25"><button type="button" class="aud" data-aud="b25" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:49</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="b25" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="b25" hidden><p>¿Cuánto cuesta? Los modelos cobran por lo que leen y lo que escriben, medido en tokens, que son fragmentos de texto. Lo clave es esto: en un agente, lo ocurrido hasta ahora se vuelve a leer en cada vuelta. En el ejemplo de la diapositiva, una llamada lee ochocientos tokens, y cuatro vueltas leen ocho mil, aunque cada vuelta solo agrega ochocientos nuevos. El caché ayuda, porque lo ya leído se cobra a una fracción. Y la cuenta no es solo el modelo: también pesan el registro, la memoria y la aprobación humana. Para controlarla: que lo rutinario no llegue al agente, poner un límite de vueltas, reusar lo ya leído y usar un modelo chico para lo simple. Las cifras son ilustrativas.</p></div></div>
   <p class="lead">Se mide en tokens: fragmentos de texto, como una palabra, parte de una palabra o un signo.</p>
   <div class="chips" aria-label="Ejemplo: la frase Cambia la dirección del pedido 1042 partida en fragmentos">
     <span class="chip big">Cambia</span><span class="chip big">la</span><span class="chip big">dirección</span><span class="chip big">del</span><span class="chip big">pedido</span><span class="chip big">10</span><span class="chip big">42</span>
@@ -699,6 +743,7 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Seis patrones de diseño">
   <span class="kicker">Bonus · ¿Cómo?</span>
   <h2>Seis patrones: cinco flujos y un agente</h2>
+  <div class="aud-wrap" data-aud-slide="b29"><button type="button" class="aud" data-aud="b29" aria-pressed="false" aria-label="Escuchar la explicación de esta diapositiva"><span class="aud-ico" aria-hidden="true">▶</span><span class="aud-lbl">Escuchar</span><span class="aud-dur">0:49</span><i class="aud-bar" aria-hidden="true"></i></button><button type="button" class="aud-t" data-aud-t="b29" aria-expanded="false">Transcripción</button><span class="aud-note">Voz sintética</span><div class="aud-tr" data-aud-tr="b29" hidden><p>¿Qué otras formas hay de diseñarlo? Hay seis patrones. Cinco son flujos, donde tú escribes la ruta: el encadenamiento, para pasos que siempre van en el mismo orden; el enrutamiento, para repartir los casos según su tipo; la paralelización, para varias revisiones a la vez; el orquestador con trabajadores, cuando el modelo decide en cuántas partes dividir el trabajo; y el evaluador y optimizador, para repetir hasta cumplir un criterio de calidad. El sexto es el agente, cuando el camino no se puede escribir antes de ver el caso. Nuestro demo combina un orquestador, que decide a quién llamar, con un encadenamiento de tres áreas y una bitácora que hace de memoria.</p></div></div>
   <div class="cols c3">
     <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M22 22H53M67 22H98"/><rect class="n" x="8" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="15" width="14" height="14" rx="3"/><rect class="n" x="98" y="15" width="14" height="14" rx="3"/></svg><span class="tag">1 · Flujo</span></div><h3>Encadenamiento</h3><p class="small">Sirve para tareas con pasos que siempre van en el mismo orden.</p></div>
     <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a" d="M20 22H58M58 8V36M58 8H100M58 22H100M58 36H100"/><rect class="n" x="6" y="15" width="14" height="14" rx="3"/><rect class="n a" x="100" y="2" width="14" height="12" rx="3"/><rect class="n a" x="100" y="16" width="14" height="12" rx="3"/><rect class="n a" x="100" y="30" width="14" height="12" rx="3"/></svg><span class="tag">2 · Flujo</span></div><h3>Enrutamiento</h3><p class="small">Sirve para repartir los casos entre caminos distintos según su tipo.</p></div>
@@ -752,8 +797,9 @@ python -m venv .venv</pre>
 <button class="click-zone next" aria-label="Diapositiva siguiente" tabindex="-1"></button>
 <div class="notes-panel" hidden></div>
 <div class="hud" role="toolbar" aria-label="Controles de la presentación">
-  <span class="hint">← → avanzar · N notas · B bonus · F pantalla completa · T tema</span>
+  <span class="hint">← → avanzar · N notas · A audio · B bonus · F pantalla completa · T tema</span>
   <span class="counter" aria-live="polite"></span>
+  <button type="button" class="audio-btn" hidden>▶ Audio (A)</button>
   <button type="button" class="theme-btn" aria-label="Cambiar tema claro u oscuro">Tema</button>
 </div>
 
@@ -771,6 +817,66 @@ python -m venv .venv</pre>
   slides.forEach(function (s, k) { s.id = String(k + 1); });
   var bonusIndex = document.querySelector('[data-bonus-index]');
   var bonusKeys = bonusIndex ? bonusIndex.getAttribute('data-keys').split(',').map(Number) : [];
+
+  // Narration: one clip at a time; moving to another slide stops it.
+  var hudAudio = document.querySelector('.audio-btn');
+  var curAudio = null; // { audio, btn }
+  var clips = {};
+  function audioOf(slide) { return slide ? slide.querySelector('[data-aud]') : null; }
+  function audReset(btn) {
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', 'false');
+    btn.querySelector('.aud-ico').textContent = '\u25B6';
+    btn.querySelector('.aud-lbl').textContent = 'Escuchar';
+  }
+  function syncHudAudio() {
+    var btn = audioOf(slides[current]);
+    hudAudio.hidden = !(root.classList.contains('present') && btn);
+    hudAudio.textContent = (curAudio && btn && curAudio.btn === btn ? '\u275A\u275A' : '\u25B6') + ' Audio (A)';
+  }
+  function audStop(rewind) {
+    if (!curAudio) return;
+    try { curAudio.audio.pause(); if (rewind) curAudio.audio.currentTime = 0; } catch (e) {}
+    audReset(curAudio.btn);
+    if (rewind) curAudio.btn.style.setProperty('--p', '0%');
+    curAudio = null;
+    syncHudAudio();
+  }
+  function audToggle(btn) {
+    if (!btn) return;
+    if (curAudio && curAudio.btn === btn) { audStop(false); return; }
+    audStop(false);
+    var id = btn.getAttribute('data-aud'), a = clips[id];
+    if (!a) {
+      a = new Audio('assets/audio/' + id + '.mp3');
+      a.preload = 'none';
+      a.addEventListener('timeupdate', function () { if (a.duration) btn.style.setProperty('--p', (100 * a.currentTime / a.duration) + '%'); });
+      a.addEventListener('ended', function () { audReset(btn); btn.style.setProperty('--p', '0%'); if (curAudio && curAudio.audio === a) curAudio = null; syncHudAudio(); });
+      a.addEventListener('error', function () { audReset(btn); if (curAudio && curAudio.audio === a) curAudio = null; syncHudAudio(); });
+      clips[id] = a;
+    }
+    curAudio = { audio: a, btn: btn };
+    btn.setAttribute('aria-pressed', 'true');
+    btn.querySelector('.aud-ico').textContent = '\u275A\u275A';
+    btn.querySelector('.aud-lbl').textContent = 'Pausar';
+    var p = a.play();
+    if (p && p.catch) p.catch(function () { audReset(btn); curAudio = null; syncHudAudio(); });
+    syncHudAudio();
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target : null;
+    if (!t) return;
+    var b = t.closest('[data-aud]');
+    if (b) { audToggle(b); return; }
+    var tb = t.closest('[data-aud-t]');
+    if (tb) {
+      var tr = tb.parentNode.querySelector('[data-aud-tr]');
+      var open = tr.hidden;
+      tr.hidden = !open;
+      tb.setAttribute('aria-expanded', String(open));
+    }
+  });
+  hudAudio.addEventListener('click', function () { audToggle(audioOf(slides[current])); });
 
   function store(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
   function load(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
@@ -804,6 +910,7 @@ python -m venv .venv</pre>
   }
 
   function show(n, updateHash) {
+    if (n !== current) audStop(true);
     current = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (s, k) { s.classList.toggle('is-active', k === current); });
     counter.textContent = (current + 1) + ' / ' + slides.length;
@@ -812,11 +919,13 @@ python -m venv .venv</pre>
       try { history.replaceState(null, '', '#' + (current + 1)); } catch (e) {}
     }
     if (!panel.hidden) renderNotes();
+    syncHudAudio();
   }
 
   function setMode() {
     var present = query.matches;
     root.classList.toggle('present', present);
+    audStop(true);
     if (present) {
       show(fromHash(), false);
     } else {
@@ -837,6 +946,7 @@ python -m venv .venv</pre>
     else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); prev(); }
     else if (k === 'Home') { e.preventDefault(); show(0); }
     else if (k === 'End') { e.preventDefault(); show(slides.length - 1); }
+    else if (k === 'a' || k === 'A') { audToggle(audioOf(slides[current])); }
     else if ((k === 'b' || k === 'B') && bonusIndex) { show(slides.indexOf(bonusIndex)); }
     else if (/^[1-9]$/.test(k) && slides[current] === bonusIndex && bonusKeys[Number(k) - 1]) { show(bonusKeys[Number(k) - 1] - 1); }
     else if (k === 'n' || k === 'N') { panel.hidden = !panel.hidden; if (!panel.hidden) renderNotes(); }

@@ -78,10 +78,17 @@ La presentación es un solo archivo, `index.html`, sin instalar nada. En una pan
 | `N` | Muestra u oculta las notas del orador |
 | `F` | Pantalla completa |
 | `T` | Cambia entre tema claro y oscuro |
+| `A` | Reproduce o pausa el audio de la diapositiva actual |
 | `B` | Salta al índice del bonus track |
 | `1` `2` `3` | En el índice del bonus track, salta al bloque elegido |
 
 Las diapositivas 1 a 22 son el taller. De la 23 en adelante está el **bonus track**: material de apoyo para las preguntas que suelen surgir (cuándo usar un agente, cuánto cuesta, qué otros patrones de diseño hay). No se presenta en orden: se abre solo si alguien pregunta.
+
+### Audio de apoyo
+
+Cada diapositiva con explicación (1 a 21) y cada bloque del bonus track (24, 25 y 29) tiene un clip de audio de 10 a 50 segundos. En un teléfono aparece un botón **Escuchar** con la duración y un enlace **Transcripción**; al presentar en pantalla horizontal los botones se ocultan y la tecla `A` reproduce el clip. Es una **voz sintética** (generada con Artlist, voz Norah, español latino) y el texto de cada clip es el de su transcripción. Los 24 archivos MP3 están en `assets/audio/` (unos 6 MB en total) y solo se descargan cuando alguien pulsa el botón.
+
+Si cambias el texto de una diapositiva, la transcripción y el audio quedan desactualizados: edita la transcripción en `index.html` y vuelve a generar el clip con el mismo nombre de archivo (`s05.mp3` para la diapositiva 5, `b25.mp3` para el bloque de costos).
 
 El código QR de la diapositiva «Material» (la 22) apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`.
 
