@@ -225,7 +225,9 @@ html.present .callout { padding: calc(var(--u) * 1) calc(var(--u) * 2); }
 .card .chips + h3 { margin-top: calc(var(--u) * 1); }
 .chart .bar-cache { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .chart .group { fill: var(--ink); font-size: 14px; letter-spacing: 0.08em; }
-.chart-bonus { max-height: calc(var(--u) * 26); }
+.tbl-wrap .chart-bonus { display: block; max-height: calc(var(--u) * 21); margin: 0 auto; }
+html.present .steps { font-size: calc(var(--u) * 2.3); gap: calc(var(--u) * 2.2); }
+.steps li > span { text-wrap: pretty; }
 @media (max-width: 700px) { .chart-bonus { min-width: 560px; max-height: none; } }
 .legend i.cache { background: var(--accent-soft); border: 1.5px dashed var(--accent); }
 .legend i.new { background: var(--accent); }
@@ -597,107 +599,97 @@ python -m venv .venv</pre>
   <span class="kicker">Bonus · ¿Cuándo?</span>
   <h2>Tres preguntas para elegir el escalón</h2>
   <div class="tbl-wrap"><table class="tbl">
-    <thead><tr><th>Criterio</th><th>Automatización</th><th>Automatización cognitiva</th><th>Agente</th></tr></thead>
+    <thead><tr><th>Pregunta</th><th>Automatización</th><th>IA en un paso</th><th>Agente</th></tr></thead>
     <tbody>
-      <tr><td>Datos</td><td>Ordenados: un formulario, un menú, una tabla.</td><td>Libres, pero se ordenan en un solo paso.</td><td>Libres y de varias fuentes: hay que cruzarlos según el caso.</td></tr>
-      <tr><td>Integraciones</td><td>Fijas y conocidas, siempre en el mismo orden.</td><td>Fijas y conocidas: entiende el texto, pero no elige qué consultar.</td><td>Se eligen según el caso: el modelo decide qué consultar y en qué orden.</td></tr>
-      <tr><td>Autonomía</td><td>Nadie: reglas fijas, la ruta está escrita.</td><td>Nadie en la ruta: resuelve un paso, no elige el camino.</td><td>El modelo decide cada paso según lo que va encontrando.</td></tr>
+      <tr><td>¿Cómo llegan los datos?</td><td>Ya ordenados: un formulario o una tabla.</td><td>En texto libre, pero se ordenan de una vez.</td><td>En texto libre y repartidos en varios sistemas: hay que cruzarlos.</td></tr>
+      <tr><td>¿A qué sistemas consulta?</td><td>Siempre a los mismos y en el mismo orden.</td><td>A los de siempre: entiende el texto, pero no decide a cuál ir.</td><td>Elige a cuál ir según el caso, y en qué orden.</td></tr>
+      <tr><td>¿Quién escoge el camino?</td><td>Nadie: está escrito de antemano.</td><td>Nadie: la IA resuelve un paso y el camino sigue fijo.</td><td>El modelo, paso a paso, según lo que encuentra.</td></tr>
     </tbody>
   </table></div>
-  <p class="callout">Empieza por el escalón más bajo que resuelva el caso. Sube solo si un criterio lo exige.</p>
-  <aside class="notes">Ejemplo para los datos: un pedido, un envío y un historial viven en lugares distintos; si hay que cruzarlos según el caso, ya no basta con ordenar un texto. Si te preguntan «¿esto necesita un agente?», recorre las tres filas con su caso y para en el primer escalón que alcance.</aside>
+  <p class="callout">Empieza por el escalón más bajo que resuelva tu caso. Sube solo si una de las tres preguntas lo pide.</p>
+  <aside class="notes">Ejemplo del taller: consultar el estado de un pedido es una automatización. Un cambio de dirección que toca tres áreas ya empieza a pedir un agente, porque el contexto tiene que viajar de un área a otra. Recorre las tres filas con el caso de quien pregunta y para en el primer escalón que alcance.</aside>
 </section>
 
 <!-- 25 -->
 <section class="slide" aria-label="Cómo cobran los modelos">
   <span class="kicker">Bonus · ¿Cuánto?</span>
-  <h2>Los modelos cobran por tokens</h2>
-  <p class="lead">Un token es un pedazo de texto: una palabra, un fragmento o un signo.</p>
-  <div class="chips" aria-label="Ejemplo: la frase ¿Dónde está mi pedido 4521? partida en ocho tokens">
-    <span class="chip big">¿</span><span class="chip big">Dónde</span><span class="chip big">está</span><span class="chip big">mi</span><span class="chip big">pedido</span><span class="chip big">45</span><span class="chip big">21</span><span class="chip big">?</span>
+  <h2>Se paga por lo que el modelo lee y escribe</h2>
+  <p class="lead">Se mide en tokens: fragmentos de texto, como una palabra, parte de una palabra o un signo.</p>
+  <div class="chips" aria-label="Ejemplo: la frase Cambia la dirección del pedido 1042 partida en fragmentos">
+    <span class="chip big">Cambia</span><span class="chip big">la</span><span class="chip big">dirección</span><span class="chip big">del</span><span class="chip big">pedido</span><span class="chip big">10</span><span class="chip big">42</span>
   </div>
-  <p class="small muted">Ejemplo ilustrativo: unos 8 tokens. Cada modelo parte el texto a su manera, y la entrada y la salida se cobran por separado.</p>
+  <p class="small muted">Ejemplo ilustrativo: cada modelo parte el texto a su manera y el conteo real lo da el proveedor. Lo que se lee y lo que se escribe se cobran por separado.</p>
   <div class="cols">
-    <div class="card"><span class="tag">Entrada · lo que lee</span><h3>Mensaje, instrucciones e historial</h3><p>El historial solo aparece en el agente, que lo va acumulando.</p></div>
-    <div class="card"><span class="tag">Salida · lo que escribe</span><h3>«Tu pedido llega el viernes»</h3><p>La respuesta que devuelve el modelo.</p></div>
+    <div class="card"><span class="tag">Lo que lee</span><h3>La petición, las instrucciones del área y, en un agente, todo lo ocurrido hasta ahora</h3></div>
+    <div class="card"><span class="tag">Lo que escribe</span><h3>«Dirección actualizada; Logística ya fue avisada»</h3></div>
   </div>
-  <p class="callout">En cada vuelta del agente, el historial entra otra vez.</p>
-  <aside class="notes">Los ocho tokens son un ejemplo para que la idea se vea, no una medición: cada modelo corta el texto distinto. Lo importante es la última frase: ahí nace la diferencia de costo entre un agente y una llamada suelta.</aside>
+  <p class="callout">En un agente, lo ocurrido hasta ahora se vuelve a leer en cada vuelta.</p>
+  <aside class="notes">Los fragmentos del ejemplo son ilustrativos, no una medición. Lo importante es la última frase: ahí nace la diferencia de costo entre un agente y una llamada suelta.</aside>
 </section>
 
 <!-- 26 -->
-<section class="slide" aria-label="En cada vuelta el modelo relee todo">
-  <span class="kicker">Bonus · ¿Cuánto?</span>
-  <h2>En cada vuelta, el modelo relee todo</h2>
-  <div class="tbl-wrap"><svg class="chart chart-bonus" viewBox="0 0 760 230" role="img" aria-label="Una llamada suelta lee 1.000 tokens. Un agente en cinco vueltas lee 1, 2, 3, 4 y 5 mil: 15.000 tokens en total.">
-    <line class="grid" x1="20" y1="190" x2="750" y2="190"/>
-    <text class="group" x="20" y="22">COGNITIVA · 1 LLAMADA</text>
-    <text class="group" x="330" y="22">AGENTE · 5 VUELTAS</text>
-    <rect class="bar-yes" x="60" y="163" width="64" height="26" rx="4"/>
-    <text class="val" x="92" y="154" text-anchor="middle">1k</text>
-    <text x="92" y="212" text-anchor="middle">V1</text>
-    <rect class="bar-yes" x="330" y="163" width="64" height="26" rx="4"/>
-    <text class="val" x="362" y="154" text-anchor="middle">1k</text>
-    <text x="362" y="212" text-anchor="middle">V1</text>
-    <rect class="bar-cache" x="418" y="163" width="64" height="26" rx="4"/>
-    <rect class="bar-yes" x="418" y="135" width="64" height="26" rx="4"/>
-    <text class="val" x="450" y="126" text-anchor="middle">2k</text>
-    <text x="450" y="212" text-anchor="middle">V2</text>
-    <rect class="bar-cache" x="506" y="163" width="64" height="26" rx="4"/>
-    <rect class="bar-cache" x="506" y="135" width="64" height="26" rx="4"/>
-    <rect class="bar-yes" x="506" y="107" width="64" height="26" rx="4"/>
-    <text class="val" x="538" y="98" text-anchor="middle">3k</text>
-    <text x="538" y="212" text-anchor="middle">V3</text>
-    <rect class="bar-cache" x="594" y="163" width="64" height="26" rx="4"/>
-    <rect class="bar-cache" x="594" y="135" width="64" height="26" rx="4"/>
-    <rect class="bar-cache" x="594" y="107" width="64" height="26" rx="4"/>
-    <rect class="bar-yes" x="594" y="79" width="64" height="26" rx="4"/>
-    <text class="val" x="626" y="70" text-anchor="middle">4k</text>
-    <text x="626" y="212" text-anchor="middle">V4</text>
-    <rect class="bar-cache" x="682" y="163" width="64" height="26" rx="4"/>
-    <rect class="bar-cache" x="682" y="135" width="64" height="26" rx="4"/>
-    <rect class="bar-cache" x="682" y="107" width="64" height="26" rx="4"/>
-    <rect class="bar-cache" x="682" y="79" width="64" height="26" rx="4"/>
-    <rect class="bar-yes" x="682" y="51" width="64" height="26" rx="4"/>
-    <text class="val" x="714" y="42" text-anchor="middle">5k</text>
-    <text x="714" y="212" text-anchor="middle">V5</text>
+<section class="slide" aria-label="Cada vuelta vuelve a leer lo anterior">
+  <span class="kicker">Bonus · ¿Cuánto? · Ejemplo ilustrativo con 800 tokens nuevos por vuelta</span>
+  <h2>Cada vuelta vuelve a leer lo anterior</h2>
+  <div class="tbl-wrap"><svg class="chart chart-bonus" viewBox="0 0 760 196" role="img" aria-label="Una llamada de IA en un paso lee 800 tokens. Un agente en cuatro vueltas lee 800, 1.600, 2.400 y 3.200: 8.000 tokens en total.">
+    <text class="group" x="20" y="16">IA EN UN PASO</text>
+    <text x="20" y="39">1 llamada</text>
+    <rect class="bar-yes" x="230" y="24" width="102" height="20" rx="4"/>
+    <text class="val" x="340" y="39">800</text>
+    <text class="group" x="20" y="76">AGENTE</text>
+    <text x="20" y="99">vuelta 1</text>
+    <rect class="bar-yes" x="230" y="84" width="102" height="20" rx="4"/>
+    <text class="val" x="342" y="99">800</text>
+    <text x="20" y="127">vuelta 2</text>
+    <rect class="bar-cache" x="230" y="112" width="102" height="20" rx="4"/>
+    <rect class="bar-yes" x="340" y="112" width="102" height="20" rx="4"/>
+    <text class="val" x="452" y="127">1.600</text>
+    <text x="20" y="155">vuelta 3</text>
+    <rect class="bar-cache" x="230" y="140" width="102" height="20" rx="4"/>
+    <rect class="bar-cache" x="340" y="140" width="102" height="20" rx="4"/>
+    <rect class="bar-yes" x="450" y="140" width="102" height="20" rx="4"/>
+    <text class="val" x="562" y="155">2.400</text>
+    <text x="20" y="183">vuelta 4</text>
+    <rect class="bar-cache" x="230" y="168" width="102" height="20" rx="4"/>
+    <rect class="bar-cache" x="340" y="168" width="102" height="20" rx="4"/>
+    <rect class="bar-cache" x="450" y="168" width="102" height="20" rx="4"/>
+    <rect class="bar-yes" x="560" y="168" width="102" height="20" rx="4"/>
+    <text class="val" x="672" y="183">3.200</text>
   </svg></div>
-  <div class="legend"><span><i class="new"></i>Paso nuevo: se paga completo</span><span><i class="cache"></i>Ya leído antes: con caché se cobra a una fracción</span></div>
-  <p class="callout">1 llamada = 1.000 tokens leídos. 5 vueltas = 1 + 2 + 3 + 4 + 5 = 15.000 tokens leídos.</p>
-  <p class="small muted">Ejemplo ilustrativo con 1.000 tokens nuevos por vuelta. Son tokens leídos, no dinero: lo que cuesta cada uno depende del modelo y de si hay caché.</p>
-  <aside class="notes">Cada vuelta del agente vuelve a leer lo anterior más lo nuevo, por eso el total crece más rápido que el número de vueltas. El caché es lo que lo amortigua: lo que ya se leyó se cobra a una fracción. No des precios: dependen del proveedor y cambian.</aside>
+  <div class="legend"><span><i class="new"></i>Lo nuevo de esa vuelta: se paga completo</span><span><i class="cache"></i>Lo ya leído: con caché se cobra a una fracción</span></div>
+  <p class="callout">Una llamada lee 800 tokens. Cuatro vueltas leen 800 + 1.600 + 2.400 + 3.200 = 8.000. <span class="muted">Son tokens leídos, no dinero.</span></p>
+  <aside class="notes">Cada vuelta vuelve a leer lo anterior más lo nuevo, por eso el total crece más rápido que el número de vueltas. El caché lo amortigua: lo ya leído se cobra a una fracción. No des precios: dependen del proveedor y cambian.</aside>
 </section>
 
 <!-- 27 -->
-<section class="slide" aria-label="Lo que pagas en cada escalón">
+<section class="slide" aria-label="Qué suma a la cuenta en cada escalón">
   <span class="kicker">Bonus · ¿Cuánto? · Orientativo: cambia con tu proveedor y tu volumen</span>
-  <h2>Lo que pagas en cada escalón</h2>
-  <div class="cols c3">
-    <div class="card"><span class="tag">01 · Automatización</span>
-      <div class="chips"><span class="chip">Plataforma</span><span class="chip">Infraestructura mínima</span></div>
-      <h3>Costo por caso: casi fijo</h3></div>
-    <div class="card"><span class="tag">02 · Cognitiva</span>
-      <div class="chips"><span class="chip">Plataforma</span><span class="chip">API del modelo</span><span class="chip">Pago por tokens</span></div>
-      <h3>Costo por caso: bajo y predecible</h3></div>
-    <div class="card"><span class="tag">03 · Agente</span>
-      <div class="chips"><span class="chip">Plataforma de agentes</span><span class="chip">Observabilidad</span><span class="chip">Sesiones</span><span class="chip">Memoria</span><span class="chip">Auditoría</span><span class="chip">Aprobación humana</span><span class="chip">Monitoreo</span></div>
-      <h3>Costo por caso: variable y más alto</h3></div>
-  </div>
-  <p class="callout">El modelo es solo una parte de la cuenta: lo que lo rodea también cuesta.</p>
-  <aside class="notes">Aquí no se dice que el modelo sea lo más barato: depende. Lo que sí se sostiene es que un agente trae piezas que una automatización no necesita (observabilidad, memoria, auditoría, aprobación humana) y cada una tiene un costo propio.</aside>
+  <h2>Qué suma a la cuenta en cada escalón</h2>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Se paga por…</th><th>Automatización</th><th>IA en un paso</th><th>Agente</th></tr></thead>
+    <tbody>
+      <tr><td>Llamadas al modelo</td><td>—</td><td>Una por caso</td><td>Varias por caso</td></tr>
+      <tr><td>Registro y vigilancia</td><td>Básico</td><td>Básico</td><td>Completo, con auditoría</td></tr>
+      <tr><td>Memoria y sesiones</td><td>—</td><td>—</td><td>Sí</td></tr>
+      <tr><td>Aprobación humana</td><td>—</td><td>—</td><td>En lo que no se puede deshacer</td></tr>
+      <tr><td>Cuenta por caso</td><td>Casi fija</td><td>Baja y predecible</td><td>Variable y más alta</td></tr>
+    </tbody>
+  </table></div>
+  <p class="callout">Todos pagan una plataforma. Lo que cambia es todo lo que rodea al modelo.</p>
+  <aside class="notes">No se dice que el modelo sea lo más barato: depende. Lo que sí se sostiene es que un agente trae piezas que una automatización no necesita (memoria, auditoría, aprobación humana) y cada una tiene un costo propio.</aside>
 </section>
 
 <!-- 28 -->
-<section class="slide" aria-label="Cuatro formas de controlar el costo">
+<section class="slide" aria-label="Cuatro palancas para controlar el costo">
   <span class="kicker">Bonus · ¿Cuánto?</span>
-  <h2>Cuatro formas de controlar el costo</h2>
-  <div class="cols">
-    <div class="card"><span class="tag">01</span><h3>Bajar de escalón</h3><p>El agente solo donde hace falta. Lo rutinario, como rastrear un pedido, se resuelve sin agente.</p></div>
-    <div class="card"><span class="tag">02</span><h3>Poner un tope</h3><p>Un máximo de vueltas (por ejemplo 5) y, al llegar, pasar el caso a una persona.</p></div>
-    <div class="card"><span class="tag">03</span><h3>Usar caché</h3><p>No pagar completo lo que se repite en cada vuelta.</p></div>
-    <div class="card"><span class="tag">04</span><h3>El modelo justo</h3><p>Uno pequeño para las tareas simples, como clasificar un correo.</p></div>
-  </div>
-  <aside class="notes">Las cuatro atacan lo visto antes: menos casos que lleguen al agente, menos vueltas, menos lectura repetida y un modelo más barato donde alcanza. El tope de 5 es un ejemplo, no una regla.</aside>
+  <h2>Cuatro palancas para controlar el costo</h2>
+  <ol class="steps">
+    <li><span><strong>Que lo rutinario no llegue al agente.</strong> Consultar el estado de un pedido se resuelve con una automatización.</span></li>
+    <li><span><strong>Un límite de vueltas.</strong> Por ejemplo 4: al llegar, el caso pasa a una persona.</span></li>
+    <li><span><strong>Reusar lo ya leído.</strong> Con caché, lo que se repite en cada vuelta se cobra a una fracción.</span></li>
+    <li><span><strong>Un modelo chico para lo simple.</strong> Clasificar un mensaje no necesita el modelo más grande.</span></li>
+  </ol>
+  <aside class="notes">Las cuatro atacan lo visto antes: menos casos que lleguen al agente, menos vueltas, menos lectura repetida y un modelo más barato donde alcanza. El tope de 4 es un ejemplo, no una regla.</aside>
 </section>
 
 <!-- 29 -->
@@ -705,32 +697,32 @@ python -m venv .venv</pre>
   <span class="kicker">Bonus · ¿Cómo?</span>
   <h2>Seis patrones: cinco flujos y un agente</h2>
   <div class="cols c3">
-    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M22 22H53M67 22H98"/><rect class="n" x="8" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="15" width="14" height="14" rx="3"/><rect class="n" x="98" y="15" width="14" height="14" rx="3"/></svg><span class="tag">1 · Flujo</span></div><h3>Encadenamiento</h3><p class="small">Úsalo cuando la tarea se divide en pasos que siempre son los mismos.</p></div>
-    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a" d="M20 22H58M58 8V36M58 8H100M58 22H100M58 36H100"/><rect class="n" x="6" y="15" width="14" height="14" rx="3"/><rect class="n a" x="100" y="2" width="14" height="12" rx="3"/><rect class="n a" x="100" y="16" width="14" height="12" rx="3"/><rect class="n a" x="100" y="30" width="14" height="12" rx="3"/></svg><span class="tag">2 · Flujo</span></div><h3>Enrutamiento</h3><p class="small">Úsalo cuando hay categorías distintas que se atienden mejor por separado.</p></div>
-    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M20 22H38M38 8V36M38 8H53M38 22H53M38 36H53M67 8H82M67 22H82M67 36H82M82 8V36M82 22H100"/><rect class="n" x="6" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="2" width="14" height="12" rx="3"/><rect class="n" x="53" y="16" width="14" height="12" rx="3"/><rect class="n" x="53" y="30" width="14" height="12" rx="3"/><rect class="n" x="100" y="15" width="14" height="14" rx="3"/></svg><span class="tag">3 · Flujo</span></div><h3>Paralelización</h3><p class="small">Úsalo cuando hay revisiones o subtareas independientes.</p></div>
-    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a d" d="M20 22H38M38 11V33M38 11H53M38 33H53M67 11H82M67 33H82M82 11V33M82 22H100"/><rect class="n a" x="6" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="4" width="14" height="14" rx="3"/><rect class="n" x="53" y="26" width="14" height="14" rx="3"/><rect class="n a" x="100" y="15" width="14" height="14" rx="3"/></svg><span class="tag">4 · Flujo</span></div><h3>Orquestador y trabajadores</h3><p class="small">Úsalo cuando las partes dependen del caso y las define el modelo.</p></div>
-    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M34 17C50 2 70 2 86 17"/><path class="l a d" d="M86 27C70 42 50 42 34 27"/><rect class="n" x="20" y="15" width="14" height="14" rx="3"/><rect class="n" x="86" y="15" width="14" height="14" rx="3"/></svg><span class="tag">5 · Flujo</span></div><h3>Evaluador y optimizador</h3><p class="small">Úsalo cuando hay criterios claros de calidad y vale la pena iterar.</p></div>
-    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a" d="M42 22L96 6M42 22H96M42 22L96 38"/><circle class="n a" cx="30" cy="22" r="10"/><circle class="dot" cx="100" cy="6" r="3"/><circle class="dot" cx="100" cy="22" r="3"/><circle class="dot" cx="100" cy="38" r="3"/></svg><span class="tag">6 · Agente</span></div><h3>Agente</h3><p class="small">Úsalo cuando el camino no se puede escribir de antemano.</p></div>
+    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M22 22H53M67 22H98"/><rect class="n" x="8" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="15" width="14" height="14" rx="3"/><rect class="n" x="98" y="15" width="14" height="14" rx="3"/></svg><span class="tag">1 · Flujo</span></div><h3>Encadenamiento</h3><p class="small">Sirve para tareas con pasos que siempre van en el mismo orden.</p></div>
+    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a" d="M20 22H58M58 8V36M58 8H100M58 22H100M58 36H100"/><rect class="n" x="6" y="15" width="14" height="14" rx="3"/><rect class="n a" x="100" y="2" width="14" height="12" rx="3"/><rect class="n a" x="100" y="16" width="14" height="12" rx="3"/><rect class="n a" x="100" y="30" width="14" height="12" rx="3"/></svg><span class="tag">2 · Flujo</span></div><h3>Enrutamiento</h3><p class="small">Sirve para repartir los casos entre caminos distintos según su tipo.</p></div>
+    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M20 22H38M38 8V36M38 8H53M38 22H53M38 36H53M67 8H82M67 22H82M67 36H82M82 8V36M82 22H100"/><rect class="n" x="6" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="2" width="14" height="12" rx="3"/><rect class="n" x="53" y="16" width="14" height="12" rx="3"/><rect class="n" x="53" y="30" width="14" height="12" rx="3"/><rect class="n" x="100" y="15" width="14" height="14" rx="3"/></svg><span class="tag">3 · Flujo</span></div><h3>Paralelización</h3><p class="small">Sirve para varias revisiones independientes a la vez.</p></div>
+    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a d" d="M20 22H38M38 11V33M38 11H53M38 33H53M67 11H82M67 33H82M82 11V33M82 22H100"/><rect class="n a" x="6" y="15" width="14" height="14" rx="3"/><rect class="n" x="53" y="4" width="14" height="14" rx="3"/><rect class="n" x="53" y="26" width="14" height="14" rx="3"/><rect class="n a" x="100" y="15" width="14" height="14" rx="3"/></svg><span class="tag">4 · Flujo</span></div><h3>Orquestador y trabajadores</h3><p class="small">Sirve cuando el modelo debe decidir en cuántas partes dividir el trabajo.</p></div>
+    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l" d="M34 17C50 2 70 2 86 17"/><path class="l a d" d="M86 27C70 42 50 42 34 27"/><rect class="n" x="20" y="15" width="14" height="14" rx="3"/><rect class="n" x="86" y="15" width="14" height="14" rx="3"/></svg><span class="tag">5 · Flujo</span></div><h3>Evaluador y optimizador</h3><p class="small">Sirve cuando hay un criterio de calidad claro y conviene repetir hasta cumplirlo.</p></div>
+    <div class="card pat"><div class="top"><svg viewBox="0 0 120 44" aria-hidden="true"><path class="l a" d="M42 22L96 6M42 22H96M42 22L96 38"/><circle class="n a" cx="30" cy="22" r="10"/><circle class="dot" cx="100" cy="6" r="3"/><circle class="dot" cx="100" cy="22" r="3"/><circle class="dot" cx="100" cy="38" r="3"/></svg><span class="tag">6 · Agente</span></div><h3>Agente</h3><p class="small">Sirve cuando el camino no se puede escribir antes de ver el caso.</p></div>
   </div>
-  <aside class="notes">En los cinco flujos la ruta la escribes tú; en el agente la elige el modelo. Del 1 al 5 es un flujo: tú escribes la ruta, aunque haya ciclos (el 5 repite, pero el recorrido es fijo). El 4 se parece al 3, con una diferencia: en la paralelización las partes ya están fijas; en el orquestador las define el modelo según el caso. Solo el 6 deja que el modelo elija el camino.</aside>
+  <aside class="notes">En los cinco flujos la ruta la escribes tú; en el agente la elige el modelo. Del 1 al 5 es un flujo: tú escribes la ruta, aunque haya ciclos (el 5 repite, pero el recorrido es fijo). El 4 se parece al 3, con una diferencia: en la paralelización tú decides de antemano qué corre en paralelo; en el orquestador el modelo decide en cuántas partes dividir el trabajo. Solo el 6 deja que el modelo elija el camino.</aside>
 </section>
 
 <!-- 30 -->
-<section class="slide" aria-label="Un diseño real combina los patrones">
+<section class="slide" aria-label="Cómo se combinan, con la empresa de pedidos">
   <span class="kicker">Bonus · ¿Cómo?</span>
-  <h2>Un diseño real combina los patrones</h2>
-  <p class="lead">Caso de ejemplo: Tienda Andina, una tienda en línea que recibe mensajes de clientes.</p>
+  <h2>Cómo se combinan, con la empresa de pedidos</h2>
+  <p class="lead">Tres tipos de petición, tres escalones distintos.</p>
   <div class="tbl-wrap"><table class="tbl">
-    <thead><tr><th>Llega por</th><th>Lo atiende</th><th>Con qué</th></tr></thead>
+    <thead><tr><th>Si llega…</th><th>Se resuelve con…</th><th>Quién decide</th></tr></thead>
     <tbody>
-      <tr><td>El menú: rastrear un pedido</td><td>Una automatización</td><td>Sin IA: la ruta es siempre la misma.</td></tr>
-      <tr><td>Otro tema: correo variado</td><td>El área responsable</td><td>Un enrutador (la IA clasifica el mensaje y lo envía).</td></tr>
-      <tr><td>Otro tema: reclamo o reembolso</td><td>Un agente de reclamos</td><td>Un modelo con cinco herramientas. Un reembolso lo aprueba una persona.</td></tr>
+      <tr><td>«¿En qué estado está mi pedido?»</td><td>Una automatización que consulta el sistema, sin IA.</td><td>Nadie: la regla es fija.</td></tr>
+      <tr><td>Un cambio de dirección en un pedido ya vendido</td><td>La cadena Ventas → Logística → Servicio.</td><td>Cada área, con lo que dejó la anterior.</td></tr>
+      <tr><td>Un reclamo que pide reembolso</td><td>Un agente que revisa el historial y propone una respuesta.</td><td>Una persona aprueba el reembolso.</td></tr>
     </tbody>
   </table></div>
-  <p class="callout">El agente es una pieza, no el sistema completo.</p>
-  <p class="small muted">Ejemplo ilustrativo: en un caso así, el agente atendería una minoría de los mensajes.</p>
-  <aside class="notes">Mira cuántos patrones conviven: menú y automatización para lo fijo, un enrutador que clasifica, y el agente solo donde el camino no se puede escribir. Aprobación humana para lo irreversible. Es un ejemplo de diseño, no un sistema que hayamos construido en el taller.</aside>
+  <p class="callout">Cada petición usa el escalón que necesita: el agente va solo donde el camino varía.</p>
+  <p class="small muted">Diseño de ejemplo sobre el caso del taller; no es un sistema construido.</p>
+  <aside class="notes">Mira cómo conviven los escalones: una regla fija para lo que siempre es igual, una cadena para lo que pasa por varias áreas y un agente solo donde hay que cruzar información y decidir el camino. Lo irreversible, como un reembolso, lo decide una persona.</aside>
 </section>
 
 <!-- 31 -->
