@@ -19,14 +19,14 @@ Primero lo ves en un caso cercano (la rutina diaria de una familia). Después lo
 | **Sabes usar un repositorio de GitHub** | Sigue la guía de 30 minutos: copias una plantilla, editas un solo archivo y lo corres |
 
 El código y las guías viven en otro repositorio, para que haya una sola versión de todo:
-**[HaroldSthid/GeminiADKPracticeCOL](https://github.com/HaroldSthid/GeminiADKPracticeCOL)**, fijado a la etiqueta `taller-v1`.
+**[HaroldSthid/GeminiADKPracticeCOL](https://github.com/HaroldSthid/GeminiADKPracticeCOL)**, fijado a la etiqueta `taller-v1.1`.
 
 | Material | Dónde está |
 | --- | --- |
-| Hoja de trabajo del reto (para imprimir) | [`workshop/RETO_OPCION_A.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/RETO_OPCION_A.md) |
-| Guion del taller | [`workshop/NARRATIVA.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/NARRATIVA.md) |
-| Guía técnica: adáptalo a tu empresa en 30 minutos | [`workshop/ADAPTA_A_TU_EMPRESA.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/ADAPTA_A_TU_EMPRESA.md) |
-| Prompt para una IA de código | [`workshop/PROMPT_PARA_IA_DE_CODIGO.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/PROMPT_PARA_IA_DE_CODIGO.md) |
+| Hoja de trabajo del reto (para imprimir) | [`workshop/RETO_OPCION_A.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1.1/workshop/RETO_OPCION_A.md) |
+| Guion del taller | [`workshop/NARRATIVA.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1.1/workshop/NARRATIVA.md) |
+| Guía técnica: adáptalo a tu empresa en 30 minutos | [`workshop/ADAPTA_A_TU_EMPRESA.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1.1/workshop/ADAPTA_A_TU_EMPRESA.md) |
+| Prompt para una IA de código | [`workshop/PROMPT_PARA_IA_DE_CODIGO.md`](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1.1/workshop/PROMPT_PARA_IA_DE_CODIGO.md) |
 
 ---
 
@@ -39,14 +39,14 @@ Si vas a probarlo en tu computador, déjalo listo antes del taller. Con la red d
 3. **Clona el código en una carpeta de ruta corta.** En Windows, por ejemplo `C:\taller`. Las dependencias de Google traen archivos con nombres larguísimos y, en una carpeta muy anidada, la instalación falla con `WinError 206`.
 
 ```bash
-git clone --branch taller-v1 --depth 1 https://github.com/HaroldSthid/GeminiADKPracticeCOL.git
+git clone --branch taller-v1.1 --depth 1 https://github.com/HaroldSthid/GeminiADKPracticeCOL.git
 cd GeminiADKPracticeCOL/adk-web
 python -m venv .venv
 ```
 
 Al terminar el `git clone`, git imprime un aviso largo que dice que estás en estado **"detached HEAD"**. **Es normal y puedes ignorarlo**: aparece siempre que se clona una versión fija (una etiqueta) y no un error. No tienes que hacer nada.
 
-4. **Instala y prueba**, siguiendo "Antes de empezar" de la [guía técnica](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1/workshop/ADAPTA_A_TU_EMPRESA.md). Ahí está explicado qué hacer en Windows si PowerShell bloquea la activación del entorno. Si `pytest` pasa, estás listo.
+4. **Instala y prueba**, siguiendo "Antes de empezar" de la [guía técnica](https://github.com/HaroldSthid/GeminiADKPracticeCOL/blob/taller-v1.1/workshop/ADAPTA_A_TU_EMPRESA.md). Ahí está explicado qué hacer en Windows si PowerShell bloquea la activación del entorno. Si `pytest` pasa, estás listo.
 
 ¿No pudiste instalarlo? No pasa nada: el notebook de Colab del repositorio corre en el navegador, sin instalar nada.
 
