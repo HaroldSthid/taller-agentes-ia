@@ -228,7 +228,10 @@ html.present .callout { padding: calc(var(--u) * 1) calc(var(--u) * 2); }
 .tbl-wrap .chart-bonus { display: block; max-height: calc(var(--u) * 21); margin: 0 auto; }
 html.present .steps { font-size: calc(var(--u) * 2.3); gap: calc(var(--u) * 2.2); }
 .steps li > span { text-wrap: pretty; }
-@media (max-width: 700px) { .chart-bonus { min-width: 560px; max-height: none; } }
+.chart-bonus text { font-size: 18px; }
+.chart-bonus .val { font-size: 18px; }
+.chart-bonus .group { font-size: 16px; }
+@media (max-width: 700px) { .tbl-wrap .chart-bonus { max-height: none; } }
 .legend i.cache { background: var(--accent-soft); border: 1.5px dashed var(--accent); }
 .legend i.new { background: var(--accent); }
 
@@ -631,30 +634,30 @@ python -m venv .venv</pre>
 <section class="slide" aria-label="Cada vuelta vuelve a leer lo anterior">
   <span class="kicker">Bonus · ¿Cuánto? · Ejemplo ilustrativo con 800 tokens nuevos por vuelta</span>
   <h2>Cada vuelta vuelve a leer lo anterior</h2>
-  <div class="tbl-wrap"><svg class="chart chart-bonus" viewBox="0 0 760 196" role="img" aria-label="Una llamada de IA en un paso lee 800 tokens. Un agente en cuatro vueltas lee 800, 1.600, 2.400 y 3.200: 8.000 tokens en total.">
+  <div class="tbl-wrap"><svg class="chart chart-bonus" viewBox="0 0 510 196" role="img" aria-label="Una llamada de IA en un paso lee 800 tokens. Un agente en cuatro vueltas lee 800, 1.600, 2.400 y 3.200: 8.000 tokens en total.">
     <text class="group" x="20" y="16">IA EN UN PASO</text>
     <text x="20" y="39">1 llamada</text>
-    <rect class="bar-yes" x="230" y="24" width="102" height="20" rx="4"/>
-    <text class="val" x="340" y="39">800</text>
+    <rect class="bar-yes" x="130" y="24" width="70" height="20" rx="4"/>
+    <text class="val" x="208" y="39">800</text>
     <text class="group" x="20" y="76">AGENTE</text>
     <text x="20" y="99">vuelta 1</text>
-    <rect class="bar-yes" x="230" y="84" width="102" height="20" rx="4"/>
-    <text class="val" x="342" y="99">800</text>
+    <rect class="bar-yes" x="130" y="84" width="70" height="20" rx="4"/>
+    <text class="val" x="208" y="99">800</text>
     <text x="20" y="127">vuelta 2</text>
-    <rect class="bar-cache" x="230" y="112" width="102" height="20" rx="4"/>
-    <rect class="bar-yes" x="340" y="112" width="102" height="20" rx="4"/>
-    <text class="val" x="452" y="127">1.600</text>
+    <rect class="bar-cache" x="130" y="112" width="70" height="20" rx="4"/>
+    <rect class="bar-yes" x="208" y="112" width="70" height="20" rx="4"/>
+    <text class="val" x="286" y="127">1.600</text>
     <text x="20" y="155">vuelta 3</text>
-    <rect class="bar-cache" x="230" y="140" width="102" height="20" rx="4"/>
-    <rect class="bar-cache" x="340" y="140" width="102" height="20" rx="4"/>
-    <rect class="bar-yes" x="450" y="140" width="102" height="20" rx="4"/>
-    <text class="val" x="562" y="155">2.400</text>
+    <rect class="bar-cache" x="130" y="140" width="70" height="20" rx="4"/>
+    <rect class="bar-cache" x="208" y="140" width="70" height="20" rx="4"/>
+    <rect class="bar-yes" x="286" y="140" width="70" height="20" rx="4"/>
+    <text class="val" x="364" y="155">2.400</text>
     <text x="20" y="183">vuelta 4</text>
-    <rect class="bar-cache" x="230" y="168" width="102" height="20" rx="4"/>
-    <rect class="bar-cache" x="340" y="168" width="102" height="20" rx="4"/>
-    <rect class="bar-cache" x="450" y="168" width="102" height="20" rx="4"/>
-    <rect class="bar-yes" x="560" y="168" width="102" height="20" rx="4"/>
-    <text class="val" x="672" y="183">3.200</text>
+    <rect class="bar-cache" x="130" y="168" width="70" height="20" rx="4"/>
+    <rect class="bar-cache" x="208" y="168" width="70" height="20" rx="4"/>
+    <rect class="bar-cache" x="286" y="168" width="70" height="20" rx="4"/>
+    <rect class="bar-yes" x="364" y="168" width="70" height="20" rx="4"/>
+    <text class="val" x="442" y="183">3.200</text>
   </svg></div>
   <div class="legend"><span><i class="new"></i>Lo nuevo de esa vuelta: se paga completo</span><span><i class="cache"></i>Lo ya leído: con caché se cobra a una fracción</span></div>
   <p class="callout">Una llamada lee 800 tokens. Cuatro vueltas leen 800 + 1.600 + 2.400 + 3.200 = 8.000. <span class="muted">Son tokens leídos, no dinero.</span></p>
