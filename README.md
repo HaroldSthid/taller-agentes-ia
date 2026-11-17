@@ -78,8 +78,12 @@ La presentación es un solo archivo, `index.html`, sin instalar nada. En una pan
 | `N` | Muestra u oculta las notas del orador |
 | `F` | Pantalla completa |
 | `T` | Cambia entre tema claro y oscuro |
+| `B` | Salta al índice del bonus track |
+| `1` `2` `3` | En el índice del bonus track, salta al bloque elegido |
 
-El código QR de la última diapositiva apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`.
+Las diapositivas 1 a 22 son el taller. De la 23 en adelante está el **bonus track**: material de apoyo para las preguntas que suelen surgir (cuándo usar un agente, cuánto cuesta, qué otros patrones de diseño hay). No se presenta en orden: se abre solo si alguien pregunta.
+
+El código QR de la diapositiva «Material» (la 22) apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`.
 
 ## Licencia
 
