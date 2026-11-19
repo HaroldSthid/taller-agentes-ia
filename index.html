@@ -189,8 +189,12 @@ pre.prompt { margin: 0; white-space: pre-wrap; }
 .qr-card { background: #FFFFFF; border-radius: calc(var(--u) * 1.4); padding: calc(var(--u) * 1.4); display: inline-block; line-height: 0; }
 .qr-card img { width: calc(var(--u) * 26); max-width: 100%; height: auto; display: block; }
 .qr-wrap { display: grid; gap: calc(var(--u) * 3); grid-template-columns: minmax(0, 1fr); align-items: center; justify-items: start; }
-html.present .qr-wrap { grid-template-columns: auto minmax(0, 1fr); gap: calc(var(--u) * 4); }
+html.present .qr-wrap { grid-template-columns: auto minmax(0, 1fr) auto; gap: calc(var(--u) * 4); }
 html.present .qr-card img { width: calc(var(--u) * 21); }
+.qr-side { display: grid; gap: calc(var(--u) * 0.8); justify-items: start; }
+.qr-side .qr-card img { width: calc(var(--u) * 16); }
+html.present .qr-side .qr-card img { width: calc(var(--u) * 14); }
+.qr-side p { margin: 0; }
 .big-url { font-family: var(--font-mono); font-size: calc(var(--u) * 2.2); overflow-wrap: anywhere; }
 
 /* Bonus track */
@@ -619,10 +623,14 @@ python -m venv .venv</pre>
     <div>
       <p class="lead">Escanea el código para tener esta presentación y los enlaces en tu teléfono.</p>
       <p class="big-url">haroldsthid.github.io/taller-agentes-ia</p>
-      <p class="small muted"><a href="https://github.com/HaroldSthid/taller-agentes-ia">Repositorio del taller</a> · <a href="https://github.com/HaroldSthid/GeminiADKPracticeCOL/tree/taller-v1.1">Código y guías</a> · <a href="#23">Bonus track: preguntas frecuentes</a></p>
+      <p class="small muted"><a href="https://github.com/HaroldSthid/taller-agentes-ia">Repositorio del taller</a> · <a href="https://github.com/HaroldSthid/GeminiADKPracticeCOL/tree/taller-v1.1">Código y guías</a> · <a href="https://haroldsthid.github.io/GeminiADKPracticeCOL/">Rutina familiar: la página del ejemplo</a> · <a href="#23">Bonus track: preguntas frecuentes</a></p>
+    </div>
+    <div class="qr-side">
+      <div class="qr-card"><img src="assets/qr-linkedin.svg" alt="Código QR que abre el perfil de LinkedIn de Harold Sthid Piravaguen" width="260" height="260"></div>
+      <p class="small muted">Conectemos en LinkedIn</p>
     </div>
   </div>
-  <aside class="notes">Deja esta diapositiva abierta mientras la gente se acomoda o se despide. El QR lleva a esta misma presentación; desde la última sección salen todos los enlaces. Si alguien pregunta por costos, por cuándo usar un agente o por otras formas de diseñarlo, pasa a la siguiente (o pulsa B): es el bonus track.</aside>
+  <aside class="notes">Deja esta diapositiva abierta mientras la gente se acomoda o se despide. El QR grande lleva a esta misma presentación; el pequeño, a tu perfil de LinkedIn. Desde la última sección salen todos los enlaces, incluida la página web del ejemplo de Rutina familiar. Si alguien pregunta por costos, por cuándo usar un agente o por otras formas de diseñarlo, pasa a la siguiente (o pulsa B): es el bonus track.</aside>
 </section>
 
 <!-- 23 -->

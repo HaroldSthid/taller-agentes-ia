@@ -90,7 +90,7 @@ Cada diapositiva con explicación (1 a 21) y cada bloque del bonus track (24, 25
 
 Si cambias el texto de una diapositiva, la transcripción y el audio quedan desactualizados: edita la transcripción en `index.html` y vuelve a generar el clip con el mismo nombre de archivo (`s05.mp3` para la diapositiva 5, `b25.mp3` para el bloque de costos).
 
-El código QR de la diapositiva «Material» (la 22) apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`.
+El código QR de la diapositiva «Material» (la 22) apunta a `https://haroldsthid.github.io/taller-agentes-ia/`. Si cambias el nombre del repositorio o el usuario, regéneralo con `python tools/make_qr.py <nueva-direccion>` (necesita `pip install segno`) y haz commit del archivo `assets/qr-presentacion.svg`. La misma diapositiva muestra un segundo QR, el del perfil de LinkedIn (`assets/qr-linkedin.svg`), que se genera con `python tools/make_qr.py <url-del-perfil> qr-linkedin.svg "Código QR del perfil de LinkedIn"`.
 
 ## Licencia
 
